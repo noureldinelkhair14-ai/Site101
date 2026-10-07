@@ -1,0 +1,36 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{db}/documents {
+
+    function profile() { return get(/databases/$(db)/documents/users/$(request.auth.uid)).data; }
+    function isActive() {
+      return request.auth != null
+        && exists(/databases/$(db)/documents/users/$(request.auth.uid))
+        && profile().active == true;
+    }
+    function isManager() { return isActive() && profile().role == 'manager'; }
+    function isBootstrapManager() {
+      return request.auth != null && request.auth.token.email == 'manager@mypharmacy.app';
+    }
+
+    // ملفات المستخدمين (اسم المستخدم والدور) — المفتاح هو uid
+    match /users/{uid} {
+      allow read: if request.auth != null && (request.auth.uid == uid || isActive());
+      allow create: if isManager()
+        || (request.auth.uid == uid && isBootstrapManager() && request.resource.data.role == 'manager');
+      allow update, delete: if isManager();
+    }
+
+    // ربط اسم المستخدم بالبريد الداخلي (قراءة فردية فقط قبل تسجيل الدخول)
+    match /logins/{name} {
+      allow get: if true;
+      allow list: if false;
+      allow write: if isManager() || isBootstrapManager();
+    }
+
+    // باقي البيانات: لأي مستخدم مفعّل
+    match /{col}/{docId} {
+      allow read, write: if col != 'users' && col != 'logins' && isActive();
+    }
+  }
+}

@@ -1,0 +1,942 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#059669">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="MyPharmacy">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg">
+<title>MyPharmacy v55 | نظام إدارة الصيدلية</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;padding:0;width:100%;max-width:100%;overflow-x:hidden}body{font-family:Tahoma,Arial,sans-serif;background:#f1f5f9;color:#0f172a}
+button,input,select,textarea{font:inherit}button{cursor:pointer}.app{min-height:100vh;width:100%;display:block;overflow-x:hidden}
+.sidebar{width:245px;background:#0f172a;color:white;padding:18px;position:fixed;right:0;top:0;bottom:0;z-index:20;overflow:auto}
+.brand{font-size:22px;font-weight:800;margin-bottom:22px}.brand small{display:block;color:#94a3b8;font-size:11px;margin-top:4px}
+.nav button{width:100%;border:0;background:transparent;color:#cbd5e1;padding:12px;border-radius:10px;text-align:right;margin:3px 0}.nav button.active,.nav button:hover{background:#059669;color:white}
+.main{margin-right:245px;width:auto;max-width:none;padding:18px;min-width:0;overflow-x:hidden}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:10px}.top h1{margin:0;font-size:24px}.muted{color:#64748b;font-size:12px}
+.grid{display:grid;gap:14px}.cards{grid-template-columns:repeat(4,minmax(0,1fr))}.card{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;box-shadow:0 2px 8px #00000008}.stat b{display:block;font-size:23px;margin-top:8px}
+.panel{background:white;border:1px solid #e2e8f0;border-radius:16px;padding:16px;margin-bottom:14px}.panel h2{font-size:17px;margin:0 0 14px}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.grow{flex:1}.input,.select,.textarea{width:100%;border:1px solid #cbd5e1;border-radius:10px;padding:10px;background:white;outline:none}.input:focus,.select:focus,.textarea:focus{border-color:#10b981;box-shadow:0 0 0 3px #10b98120}
+.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:700}.primary{background:#059669;color:#fff}.dark{background:#0f172a;color:#fff}.danger{background:#dc2626;color:#fff}.light{background:#e2e8f0;color:#0f172a}.warning{background:#f59e0b;color:#fff}.small{padding:7px 9px;font-size:12px}
+.table-wrap{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain;touch-action:pan-x;display:block}.table-wrap table{width:max-content;min-width:100%;border-collapse:collapse;font-size:13px}.swipe-scroll{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;overscroll-behavior-x:contain;direction:ltr;scrollbar-width:auto;cursor:grab}.swipe-scroll:active{cursor:grabbing}.swipe-scroll>table,.swipe-scroll>.swipe-content{direction:rtl;min-width:max-content}.swipe-scroll::-webkit-scrollbar{height:10px}.swipe-scroll::-webkit-scrollbar-thumb{background:#94a3b8;border-radius:10px}.swipe-scroll::-webkit-scrollbar-track{background:#e2e8f0;border-radius:10px}.table-wrap th,.table-wrap td{white-space:nowrap}th,td{padding:10px;border-bottom:1px solid #e2e8f0;text-align:right;white-space:nowrap}th{background:#f8fafc;color:#475569}
+.badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#dcfce7;color:#166534;font-size:11px;font-weight:700}.badge.red{background:#fee2e2;color:#991b1b}.badge.amber{background:#fef3c7;color:#92400e}
+.pos{display:grid;grid-template-columns:1.45fr .85fr;gap:14px}.products{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;max-height:calc(100vh - 220px);overflow:auto}.prod{border:1px solid #e2e8f0;border-radius:13px;padding:12px;background:#fff}.prod h3{font-size:14px;margin:7px 0}.prod p{font-size:11px;color:#64748b;margin:4px 0}
+.cart{position:sticky;top:12px;height:calc(100vh - 120px);display:flex;flex-direction:column}.cart-list{flex:1;overflow:auto}.cart-item{padding:10px;border-bottom:1px solid #e2e8f0}.qty{display:flex;align-items:center;gap:7px;margin-top:7px}.qty button{border:0;background:#e2e8f0;border-radius:7px;width:28px;height:28px}.total{font-size:21px;font-weight:800;color:#059669}
+.modal{position:fixed;inset:0;background:#0008;display:none;align-items:center;justify-content:center;padding:15px;z-index:100}.modal.show{display:flex}.modal-box{background:white;border-radius:18px;padding:18px;width:min(560px,100%);max-height:92vh;overflow:auto}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.full{grid-column:1/-1}
+.camera{background:#000;border-radius:14px;overflow:hidden;position:relative}.camera video{width:100%;display:block;max-height:55vh;object-fit:cover}.scanline{position:absolute;left:12%;right:12%;top:50%;height:3px;background:#10b981;box-shadow:0 0 12px #10b981}
+.toast{position:fixed;bottom:18px;left:18px;background:#0f172a;color:#fff;padding:12px 16px;border-radius:10px;display:none;z-index:300}.toast.show{display:block}
+.hide{display:none!important}.search{max-width:500px}.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px;background:linear-gradient(135deg,#ecfdf5,#eff6ff)}.login-box{width:min(420px,100%);background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:24px;box-shadow:0 14px 45px #0002}.login-logo{font-size:30px;font-weight:900;color:#059669;text-align:center;margin-bottom:4px}.login-user{font-size:13px;color:#64748b;text-align:center;margin-bottom:20px}.danger-text{color:#dc2626;font-weight:700}
+@media(max-width:900px){
+ .sidebar{display:none;width:min(285px,82vw);max-width:85vw;padding:18px;right:0;transform:none;transition:none;box-shadow:-8px 0 30px #0005} .sidebar.open{display:block}
+ .brand{font-size:22px;text-align:right}.brand small{display:block}
+ .nav button{font-size:14px;text-align:right}.nav button span{display:inline}.nav button:before{display:none}
+ .main{margin-right:0;margin-left:0;width:100%;max-width:100%;padding:10px;min-width:0;overflow-x:hidden}
+ .cards{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .pos{grid-template-columns:1fr}.cart{position:relative;height:auto}.products{grid-template-columns:repeat(2,minmax(0,1fr));max-height:none}
+ .top{padding-left:44px}.top h1{font-size:19px}.formgrid{grid-template-columns:1fr}
+ .dashboard-layout{grid-template-columns:1fr!important}.dashboard-scroll,.alerts-scroll{width:100%;max-width:100%;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x;direction:ltr}.dashboard-scroll>.table-wrap{width:max-content;max-width:none;overflow:visible}.dashboard-scroll>.table-wrap table{min-width:760px;width:760px;direction:rtl}.alerts-scroll-inner{min-width:760px;width:max-content;direction:rtl}
+ .mobile-menu-btn{display:flex!important}
+}
+@media(max-width:520px){.cards{grid-template-columns:1fr 1fr}.products{grid-template-columns:1fr}.formgrid{grid-template-columns:1fr}.dashboard-layout{grid-template-columns:1fr!important}}
+
+
+ .mobile-menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:60;width:40px;height:40px;border:0;border-radius:11px;background:#0f172a;color:#fff;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 14px #0003}
+ .sidebar-backdrop{display:none;position:fixed;inset:0;background:#0006;z-index:15}
+ .sidebar-backdrop.show{display:block}
+</style>
+</head>
+<button class="pwa-install-btn" onclick="installMyPharmacy()" style="display:none;position:fixed;top:12px;left:12px;z-index:99999;background:#059669;color:white;border:0;border-radius:12px;padding:10px 14px;font-weight:700;box-shadow:0 4px 12px rgba(0,0,0,.18)">📱 تثبيت التطبيق</button><body>
+<div id="app"></div>
+<div id="modal" class="modal"></div>
+<div id="toast" class="toast"></div>
+
+<script crossorigin="anonymous" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script crossorigin="anonymous" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script crossorigin="anonymous" src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script>
+const DB_NAME='MyPharmacyDB', DB_VER=11;
+let db, state={view:'dashboard',products:[],cart:[],sales:[],returns:[],purchases:[],expenses:[],customers:[],pharmacists:[],shifts:[],users:[],currentUser:null,settings:{name:'MyPharmacy',phone:'',address:'',currency:'ج.س'},query:'',saleFilter:'',saleFrom:'',saleTo:'',purchaseFilter:'',purchaseFrom:'',purchaseTo:'',expenseFrom:'',expenseTo:'',reportFrom:'',reportTo:'',discountType:'percent',discountValue:0,paymentMethod:'cash',paymentProof:'',dashboardPeriod:'today'};
+const $=id=>document.getElementById(id);
+function money(n){return Number(n||0).toLocaleString('ar-SA',{minimumFractionDigits:2,maximumFractionDigits:2})+' '+state.settings.currency}
+function paymentMethodLabel(m){return m==='bankak'?'بنكك':m==='fawry'?'فوري':m==='ocash'?'أوكاش':'كاش'}
+function isElectronicPayment(m){return ['bankak','fawry','ocash'].includes(m)}
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
+function toast(s){$('toast').textContent=s;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+const COLS=['products','sales','purchases','expenses','customers','settings','pharmacists','shifts','users','returns'];
+const FB=window.FIREBASE_CONFIG,BOOT_EMAIL='manager@mypharmacy.app';
+let fbAuth,fdb,cache={},unsubs=[],rfT=null;
+const clone=o=>JSON.parse(JSON.stringify(o));
+const newId=()=>Date.now()*1000+Math.floor(Math.random()*1000);
+const docKey=(s,o)=>String(s==='users'&&o.uid?o.uid:o.id);
+const cloudErr=e=>{console.error(e);toast('تعذر الحفظ في السحابة: '+(e.code==='permission-denied'?'لا تملك صلاحية':'تحقق من الاتصال'))};
+function startCloud(){return Promise.all(COLS.map(n=>new Promise((res,rej)=>{let first=true;cache[n]=new Map();
+  unsubs.push(fdb.collection(n).onSnapshot(s=>{s.docChanges().forEach(c=>{if(c.type==='removed')cache[n].delete(c.doc.id);else cache[n].set(c.doc.id,c.doc.data())});
+    if(first){first=false;res()}else if(!s.metadata.hasPendingWrites)scheduleRefresh()},
+    e=>{if(first){first=false;rej(e)}else if(e.code==='permission-denied'){logout();toast('تم إيقاف حسابك أو تغيير كلمة السر')}else console.error(e)}))})))}
+function stopCloud(){unsubs.forEach(f=>f());unsubs=[];cache={};clearTimeout(rfT)}
+function scheduleRefresh(){clearTimeout(rfT);rfT=setTimeout(async function tryR(){const a=document.activeElement;if(!state.currentUser)return;if((a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName))||$('modal').classList.contains('show')){rfT=setTimeout(tryR,4000);return}await load();render()},800)}
+function openDB(){return Promise.resolve()}
+function all(s){return Promise.resolve([...(cache[s]||new Map()).values()].map(clone).sort((a,b)=>(a.id>b.id)-(a.id<b.id)))}
+function put(s,o){if(o.id==null)o.id=newId();const d=clone(o),k=docKey(s,d);cache[s].set(k,d);fdb.collection(s).doc(k).set(d).catch(cloudErr);return Promise.resolve(d.id)}
+function add(s,o){o.id=newId();return put(s,o)}
+function del(s,id){const f=[...cache[s].entries()].find(([k,v])=>v.id===id),k=f?f[0]:String(id);cache[s].delete(k);fdb.collection(s).doc(k).delete().catch(cloudErr);return Promise.resolve()}
+async function enterApp(){await startCloud();await seed();await migrateUnits();await load();restoreSession()}
+async function bootCloud(){
+  if(!FB||!FB.apiKey||/PASTE|YOUR/i.test(FB.apiKey)){$('app').innerHTML='<div style="padding:24px;font-family:Arial;direction:rtl;text-align:center"><h2>إعداد Firebase ناقص</h2><p>افتح الملف <b>public/firebase-config.js</b> والصق إعدادات مشروعك فيه ثم أعد النشر.</p></div>';return}
+  firebase.initializeApp(FB);fbAuth=firebase.auth();fdb=firebase.firestore();
+  try{await fdb.enablePersistence({synchronizeTabs:true})}catch(_){}
+  const u=await new Promise(r=>{const off=fbAuth.onAuthStateChanged(x=>{off();r(x)})});
+  if(u){try{await enterApp()}catch(e){console.error(e)}if(!state.currentUser){try{await fbAuth.signOut()}catch(_){}stopCloud()}}
+  render()}
+function authMsg(e){const c=e&&e.code||'';return c==='auth/weak-password'?'كلمة السر يجب أن تكون 6 أحرف على الأقل':c==='auth/network-request-failed'?'تعذر الاتصال بالإنترنت':c==='auth/too-many-requests'?'محاولات كثيرة، انتظر قليلاً ثم أعد المحاولة':c==='auth/requires-recent-login'?'سجّل الخروج ثم الدخول من جديد وأعد المحاولة':c==='app/inactive'?'الحساب غير مفعّل أو غير موجود':'اسم المستخدم أو كلمة السر غير صحيحة'}
+async function createAuthUser(email,password){const sec=firebase.apps.find(a=>a.name==='sec')||firebase.initializeApp(FB,'sec'),a=sec.auth(),c=await a.createUserWithEmailAndPassword(email,password);await a.signOut();return c.user.uid}
+const genEmail=()=>'u'+Date.now().toString(36)+Math.random().toString(36).slice(2,8)+'@mypharmacy.app';
+const loginRef=n=>fdb.collection('logins').doc(encodeURIComponent(n));
+async function ensureBootProfile(){const u=fbAuth.currentUser;if(!u||u.email!==BOOT_EMAIL)return;const ref=fdb.collection('users').doc(u.uid);if((await ref.get()).exists)return;await ref.set({id:newId(),uid:u.uid,username:'manager',role:'manager',pharmacistId:null,createdAt:new Date().toISOString(),active:true,authEmail:BOOT_EMAIL});await loginRef('manager').set({email:BOOT_EMAIL})}
+async function seed(){if((await all('products')).length)return;let p=[
+{name:'Paracetamol 500mg',scientific:'Paracetamol',category:'Analgesics & Antipyretics',price:150,cost:90,stock:45,minStock:10,expiry:'2027-12-31',boxStrips:2,stripUnits:10,stripPrice:75,piecePrice:7.5,shelf:'A-01'},
+{name:'Amoxicillin 500mg',scientific:'Amoxicillin',category:'Penicillins & Cephalosporins',price:450,cost:300,stock:20,minStock:8,expiry:'2027-06-30',boxStrips:2,stripUnits:10,stripPrice:225,piecePrice:22.5,shelf:'A-02'},
+{name:'Omeprazole 20mg',scientific:'Omeprazole',category:'Antacids & Anti-ulcer',price:320,cost:200,stock:15,minStock:5,expiry:'2028-01-31',boxStrips:2,stripUnits:10,stripPrice:160,piecePrice:16,shelf:'B-01'},
+{name:'Ibuprofen 400mg',scientific:'Ibuprofen',category:'NSAIDS',price:200,cost:120,stock:30,minStock:8,expiry:'2027-09-30',boxStrips:2,stripUnits:10,stripPrice:100,piecePrice:10,shelf:'A-03'},
+{name:'Ciprofloxacin 500mg',scientific:'Ciprofloxacin',category:'Macrolides & Quinolones',price:600,cost:390,stock:12,minStock:5,expiry:'2027-05-31',boxStrips:2,stripUnits:10,stripPrice:300,piecePrice:30,shelf:'B-02'}];for(const x of p){x.boxSaleEnabled=false;await add('products',x)}}
+function normalizeDosageForm(form){
+  const f=String(form||'').trim().toLowerCase();
+  const map={
+    'tablets':'tablets_capsules','capsules':'tablets_capsules','tablet':'tablets_capsules','capsule':'tablets_capsules',
+    'suspension':'liquid','solution':'liquid','syrup':'liquid','liquid':'liquid',
+    'cream':'topical','ointment':'topical','topical':'topical',
+    'drops':'drops','drop':'drops',
+    'injection':'injections','injections':'injections',
+    'canula':'other','cannula':'other',
+    'inhalation':'inhalations_aerosols','inhalations':'inhalations_aerosols','aerosol':'inhalations_aerosols',
+    'suppository':'suppositories_pessaries','pessary':'suppositories_pessaries',
+    'transdermal':'transdermal_patches','patch':'transdermal_patches','transdermal patch':'transdermal_patches',
+    'effervescent':'effervescent','effervescent formulations':'effervescent',
+    'powder':'powders_granules','granules':'powders_granules','powders':'powders_granules',
+    'implant':'implants_inserts','inserts':'implants_inserts',
+    'nasal spray':'nasal_sprays','spray':'nasal_sprays','nasal_sprays':'nasal_sprays',
+    'other':'other'
+  };
+  if(!f)return 'tablets_capsules';
+  return map[f]||map[String(form||'').trim()]||'other';
+}
+async function migrateUnits(){
+  let ps=await all('products');
+  for(const p of ps){
+    let changed=false;
+    const normalized=normalizeDosageForm(p.dosageForm);
+    if(p.dosageForm!==normalized){p.dosageForm=normalized;changed=true}
+    const strip=isStripForm(p);
+    const legacyBoxStrips=Math.max(1,Number(p.boxStrips||1));
+    const legacyStripUnits=Math.max(1,Number(p.stripUnits||1));
+    if(p.cost==null){p.cost=0;changed=true}
+    if(p.shelf==null){p.shelf='';changed=true}
+    if(p.warehouseUnits==null){p.warehouseUnits=0;changed=true}
+    if(p.unitAccountingVersion!==2){
+      if(strip){
+        // v48 stored tablets/capsules as individual pieces. Convert once to strips.
+        const oldPieces=Number(p.stockUnits!=null?p.stockUnits:(Number(p.stock||0)*legacyBoxStrips*legacyStripUnits));
+        p.stockUnits=Math.max(0,Math.floor(oldPieces/legacyStripUnits));
+        p.stock=p.stockUnits;
+        p.minStock=Math.max(0,Math.ceil(Number(p.minStock||0)*legacyBoxStrips));
+        const oldStripPrice=Number(p.stripPrice!=null?p.stripPrice:(Number(p.price||0)/legacyBoxStrips));
+        p.price=oldStripPrice;
+        p.stripPrice=oldStripPrice;
+        // Purchase cost is now per strip.
+        p.cost=Number(p.cost||0)/legacyBoxStrips;
+      }else{
+        p.stockUnits=Math.max(0,Number(p.stockUnits!=null?p.stockUnits:p.stock||0));
+        p.stock=p.stockUnits;
+      }
+      p.unitAccountingVersion=2;
+      changed=true;
+    }
+    if(p.boxSaleEnabled!==false){p.boxSaleEnabled=false;changed=true}
+    if(changed) await put('products',p);
+  }
+  // Convert historical sales/purchases once so old box/pill records remain consistent with strip/unit accounting.
+  const sales=await all('sales');
+  for(const s of sales){
+    if(s.unitAccountingVersion===2) continue;
+    let changed=false;
+    for(const i of (s.items||[])){
+      const p=ps.find(x=>Number(x.id)===Number(i.id));
+      if(isStripForm(p||{})){
+        if(i.unit==='box'){i.qty=Number(i.qty||0)*Math.max(1,Number(p.boxStrips||1));i.unit='strip';i.unitLabel='شريط';i.unitSize=1;changed=true}
+        else if(i.unit==='strip' || i.unit==='unit'){i.qty=Number(i.qty||0)*(i.unit==='unit'?1/Math.max(1,Number(p.stripUnits||1)):1);i.unit='strip';i.unitLabel='شريط';i.unitSize=1;changed=true}
+      }else if(i.unitSize!==1){i.unitSize=1;changed=true}
+    }
+    if(changed||s.unitAccountingVersion!==2){s.unitAccountingVersion=2;await put('sales',s)}
+  }
+  const purchases=await all('purchases');
+  for(const x of purchases){
+    if(x.unitAccountingVersion===2) continue;
+    const p=ps.find(z=>Number(z.id)===Number(x.productId));
+    if(isStripForm(p||{}) && x.unitType==='box'){
+      const bs=Math.max(1,Number(p.boxStrips||1));
+      x.qty=Number(x.qty||0)*bs;
+      x.costPerUnit=Number(x.costPerUnit!=null?x.costPerUnit:x.costPerBox||0)/bs;
+      x.unitType='strip';x.unitLabel='شريط';
+    }else if(isStripForm(p||{})){
+      x.unitType='strip';x.unitLabel='شريط';
+      if(x.costPerUnit==null)x.costPerUnit=Number(x.costPerBox||0);
+    }else{x.unitType='unit';x.unitLabel='وحدة';if(x.costPerUnit==null)x.costPerUnit=Number(x.costPerBox||0)}
+    x.unitAccountingVersion=2;
+    await put('purchases',x);
+  }
+}
+async function load(){state.products=await all('products');state.sales=await all('sales');state.returns=await all('returns');state.purchases=await all('purchases');state.expenses=await all('expenses');state.customers=await all('customers');state.pharmacists=await all('pharmacists');state.shifts=await all('shifts');state.users=await all('users');const s=await all('settings');if(s[0])state.settings={...state.settings,...s[0]};if(state.currentUser){const fresh=state.users.find(u=>u.id===state.currentUser.id);if(fresh)state.currentUser=fresh;}}
+async function hashPassword(password){
+  const text=String(password||'');
+  try{
+    if(window.crypto?.subtle){
+      const data=new TextEncoder().encode(text),buf=await crypto.subtle.digest('SHA-256',data);
+      return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+    }
+  }catch(e){}
+  return btoa(unescape(encodeURIComponent(text)));
+}
+function roleLabel(role){return role==='manager'?'Manager — صلاحيات كاملة':role==='supervisor'?'Manager محدود':'صيدلي';}
+function isManager(){return state.currentUser?.role==='manager';}
+function isSupervisor(){return state.currentUser?.role==='manager'||state.currentUser?.role==='supervisor';}
+function can(action){
+  if(!state.currentUser)return false;
+  if(state.currentUser.role==='manager')return true;
+  if(state.currentUser.role==='supervisor')return ['view','sale','inventoryEdit','purchase','expense','customer','shiftOwn','reports'].includes(action);
+  return ['view','sale','expense','shiftOwn','reports'].includes(action);
+}
+function loginScreen(){return `<div class="login-screen"><div class="login-box"><div class="login-logo">💊 MyPharmacy</div><div class="login-user">نظام إدارة الصيدلية • تسجيل الدخول</div><form onsubmit="doLogin(event)"><label>اسم المستخدم</label><input id="loginUser" class="input" autocomplete="username" required placeholder="اسم المستخدم"><label style="display:block;margin-top:10px">كلمة السر</label><input id="loginPass" class="input" type="password" autocomplete="current-password" required placeholder="كلمة السر"><button class="btn primary" style="width:100%;margin-top:15px">دخول</button><p id="loginMsg" class="danger-text" style="min-height:18px;margin:10px 0 0;text-align:center"></p></form><div class="muted" style="text-align:center;margin-top:12px">المستخدم الافتراضي الوحيد هو <b>manager</b>، ويمكن للمدير إضافة بقية المستخدمين يدوياً.</div></div></div>`}
+async function doLogin(e){e.preventDefault();const username=$('loginUser').value.trim().toLowerCase(),password=$('loginPass').value,msg=$('loginMsg');msg.textContent='جارٍ تسجيل الدخول...';
+  try{let email=null;try{const l=await loginRef(username).get();if(l.exists)email=l.data().email}catch(_){}
+    if(!email&&username==='manager')email=BOOT_EMAIL;
+    if(!email)throw{code:'auth/invalid-credential'};
+    try{await fbAuth.signInWithEmailAndPassword(email,password)}catch(err){
+      if(email!==BOOT_EMAIL)throw err;
+      try{await fbAuth.createUserWithEmailAndPassword(email,password)}catch(err2){throw err2.code==='auth/weak-password'?err2:err}}
+    await ensureBootProfile();await enterApp();
+    if(!state.currentUser)throw{code:'app/inactive'};
+    state.view='dashboard';render();toast(`مرحباً ${state.currentUser.username}`)
+  }catch(err){msg.textContent=authMsg(err);try{await fbAuth.signOut()}catch(_){}stopCloud()}}
+function logout(){state.currentUser=null;state.cart=[];state.paymentProof='';try{fbAuth.signOut()}catch(_){}stopCloud();['products','sales','returns','purchases','expenses','customers','pharmacists','shifts','users'].forEach(k=>state[k]=[]);render()}
+function requirePerm(action){if(can(action))return true;toast('ليس لديك صلاحية لتنفيذ هذا الإجراء');return false}
+function restoreSession(){const uid=fbAuth&&fbAuth.currentUser&&fbAuth.currentUser.uid;state.currentUser=state.users.find(u=>u.uid===uid&&u.active!==false)||null}
+async function seedUsers(){}
+function nav(){return `<aside id="sidebar" class="sidebar"><div class="brand">MyPharmacy<small>${esc(state.currentUser?.username||'')} • ${esc(roleLabel(state.currentUser?.role||''))}</small></div><div class="nav">
+<button class="${state.view==='dashboard'?'active':''}" onclick="go('dashboard')">📊 <span>لوحة التحكم</span></button>
+<button class="${state.view==='pos'?'active':''}" onclick="go('pos')">🛒 <span>نقطة البيع</span></button>
+<button class="${state.view==='warehouse'?'active':''}" onclick="go('warehouse')">🏬 <span>المخزن</span></button>
+<button class="${state.view==='inventory'?'active':''}" onclick="go('inventory')">📦 <span>المخزون</span></button>
+<button class="${state.view==='sales'?'active':''}" onclick="go('sales')">🧾 <span>المبيعات</span></button>
+<button class="${state.view==='returns'?'active':''}" onclick="go('returns')">↩️ <span>الاسترجاع</span></button>
+<button class="${state.view==='cashbox'?'active':''}" onclick="go('cashbox')">💰 <span>الصندوق</span></button>
+<button class="${state.view==='alerts'?'active':''}" onclick="go('alerts')">⚠️ <span>تنبيهات المخزون والصلاحية</span></button>
+<button class="${state.view==='purchases'?'active':''}" onclick="go('purchases')">🚚 <span>المشتريات</span></button>
+<button class="${state.view==='customers'?'active':''}" onclick="go('customers')">👥 <span>العملاء</span></button>
+<button class="${state.view==='expenses'?'active':''}" onclick="go('expenses')">💸 <span>المصروفات</span></button>
+<button class="${state.view==='reports'?'active':''}" onclick="go('reports')">📈 <span>التقارير</span></button>
+<button class="${state.view==='shifts'?'active':''}" onclick="go('shifts')">👨‍⚕️ <span>ورديات الصيادلة</span></button>
+${isManager()?`<button class="${state.view==='users'?'active':''}" onclick="go('users')">🔐 <span>المستخدمون والصلاحيات</span></button>`:''}
+<button class="${state.view==='settings'?'active':''}" onclick="go('settings')">⚙️ <span>الإعدادات</span></button>
+<button onclick="logout()" style="margin-top:12px;background:#7f1d1d;color:#fff">🚪 <span>تسجيل الخروج</span></button>
+</div></aside><div id="sidebarBackdrop" class="sidebar-backdrop" onclick="toggleSidebar(false)"></div><button class="mobile-menu-btn" onclick="toggleSidebar()" aria-label="القائمة">☰</button>`}
+function shell(content,title){return `<div class="app">${nav()}<main class="main"><div class="top"><div><h1>${title}</h1><div class="muted">${state.settings.name} • ${esc(state.currentUser?.username||'')} • يعمل محلياً</div></div></div>${content}</main></div>`}
+function localDateKey(value){const d=new Date(value);if(Number.isNaN(d.getTime()))return String(value||'').slice(0,10);const y=d.getFullYear(),m=String(d.getMonth()+1).padStart(2,'0'),day=String(d.getDate()).padStart(2,'0');return `${y}-${m}-${day}`}
+function setDashboardPeriod(period){state.dashboardPeriod=period;render()}
+
+function dashboard(){const today=localDateKey(new Date());const monthStart=today.slice(0,8)+'01';const from=state.dashboardPeriod==='month'?monthStart:today;const to=today;const periodSales=state.sales.filter(s=>{const d=localDateKey(s.time);return d>=from&&d<=to});const periodReturns=(state.returns||[]).filter(r=>{const d=localDateKey(r.time);return d>=from&&d<=to});const sales=periodSales.reduce((a,s)=>a+Number(s.total||0),0)-periodReturns.reduce((a,r)=>a+Number(r.refundAmount||0),0),profit=periodSales.reduce((a,s)=>a+Number(s.profit||0),0)-periodReturns.reduce((a,r)=>a+Number(r.profitReverse||0),0),purchases=state.purchases.reduce((a,x)=>a+Number(x.total||0),0);const periodLabel=state.dashboardPeriod==='month'?'هذا الشهر (من يوم 1 حتى اليوم)':'اليوم';const profitCard=isSupervisor()?`<div class="card stat">📈 الأرباح <span class="muted">${periodLabel}</span><b>${money(profit)}</b></div>`:'';const title=isSupervisor()?'ملخص المبيعات والأرباح':'ملخص المبيعات';return shell(`<div class="panel dashboard-period"><div class="row" style="justify-content:space-between;align-items:center"><div><h2 style="margin:0 0 5px">${title}</h2><div class="muted">الفترة الحالية: ${periodLabel}</div></div><div class="row"><button class="btn ${state.dashboardPeriod==='today'?'primary':'light'}" onclick="setDashboardPeriod('today')">اليوم</button><button class="btn ${state.dashboardPeriod==='month'?'primary':'light'}" onclick="setDashboardPeriod('month')">الشهر</button></div></div></div><div class="grid cards"><div class="card stat">💰 المبيعات <span class="muted">${periodLabel}</span><b>${money(sales)}</b></div>${profitCard}<div class="card stat">📦 الأصناف<b>${state.products.length}</b></div><div class="card stat">🚚 المشتريات<b>${money(purchases)}</b></div></div><div class="panel" style="margin-top:14px"><h2>مرحباً بك في MyPharmacy</h2><p class="muted">استخدم القائمة الجانبية للوصول إلى المبيعات، المخزون، الصندوق، المشتريات، ورديات الصيادلة وتنبيهات المخزون والصلاحية.</p></div>`,'لوحة التحكم')}
+function alertsView(){return shell(`<div class="panel"><div class="row" style="justify-content:space-between;align-items:center"><div><h2>⚠️ تنبيهات المخزون والصلاحية</h2><p class="muted">قائمة مستقلة للتنبيهات. اسحب أفقيًا يمينًا ويسارًا على الهاتف لقراءة جميع المعلومات.</p></div></div><div class="swipe-scroll alerts-swipe"><div class="swipe-content">${alerts()}</div></div></div>`,'تنبيهات المخزون والصلاحية')}
+function alerts(){let a=state.products.filter(p=>p.stock<=p.minStock||p.expiry&&new Date(p.expiry)<new Date());if(!a.length)return '<p class="muted">لا توجد تنبيهات.</p>';return a.map(p=>`<div class="row" style="justify-content:space-between;padding:9px 0;border-bottom:1px solid #e2e8f0"><b>${esc(p.name)}</b><span class="badge ${p.stock<=p.minStock||new Date(p.expiry)<new Date()?'red':''}">${p.stock<=p.minStock?'مخزون منخفض':''}${p.stock<=p.minStock&&p.expiry&&new Date(p.expiry)<new Date()?' • ':''}${p.expiry&&new Date(p.expiry)<new Date()?'منتهي':''}</span></div>`).join('')}
+function saleReturnedAmount(s){return (state.returns||[]).filter(r=>Number(r.saleId)===Number(s.id)).reduce((a,r)=>a+Number(r.refundAmount||0),0)}
+function saleRemainingAmount(s){return Math.max(0,Number(s.total||0)-saleReturnedAmount(s))}
+function saleReturnStatus(s){const r=saleReturnedAmount(s),t=Number(s.total||0);return r<=0?'مكتملة':r>=t-0.005?'مسترجعة بالكامل':'مسترجعة جزئياً'}
+function saleNetProfit(s){const reversed=(state.returns||[]).filter(r=>Number(r.saleId)===Number(s.id)).reduce((a,r)=>a+Number(r.profitReverse||0),0);return Math.max(0,Number(s.profit||0)-reversed)}
+function salesTable(arr){if(!arr.length)return '<p class="muted">لا توجد مبيعات.</p>';const profitHead=isSupervisor()?'<th>الربح</th>':'';return `<div class="swipe-scroll sales-swipe" aria-label="سجل المبيعات"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>طريقة الدفع</th><th>الإجمالي</th><th>المسترجع</th><th>الصافي</th><th>المدفوع</th>${profitHead}<th>الصيدلي</th><th>إشعار التحويل</th><th>الحالة</th><th></th></tr></thead><tbody>${arr.map(s=>`<tr><td>${esc(s.invoice)}</td><td>${new Date(s.time).toLocaleString('ar')}</td><td>${paymentMethodLabel(s.paymentMethod)}</td><td><b>${money(s.total)}</b></td><td>${money(saleReturnedAmount(s))}</td><td><b>${money(saleRemainingAmount(s))}</b></td><td>${money(s.paidAmount??s.total)}</td>${isSupervisor()?`<td>${money(saleNetProfit(s))}</td>`:''}<td>${esc(s.pharmacistName||'-')}</td><td>${s.paymentProof?`<button class="btn dark small" onclick="viewPaymentProof(${s.id})">عرض الإشعار</button>`:'-'}</td><td>${saleReturnStatus(s)}</td><td><button class="btn light small" onclick="printInvoice(${s.id})">طباعة</button> ${saleRemainingAmount(s)>0?`<button class="btn primary small" onclick="returnSaleModal(${s.id})">استرجاع</button>`:''} ${isManager()?`<button class="btn danger small" onclick="deleteSale(${s.id})">حذف</button>`:''}</td></tr>`).join('')}</tbody></table></div>`}
+function isStripForm(p){return ['tablets_capsules','tablets','capsules'].includes(p?.dosageForm||'tablets_capsules')}
+function formLabel(p){const m={tablets_capsules:'Tablets & Capsules',tablets:'Tablets & Capsules',capsules:'Tablets & Capsules',liquid:'Liquid Preparations',suspension:'Liquid Preparations',solution:'Liquid Preparations',syrup:'Liquid Preparations',topical:'Topical Preparations',cream:'Topical Preparations',ointment:'Topical Preparations',drops:'Drops',injections:'Injections',injection:'Injections',canula:'Other / غيرها',inhalations_aerosols:'Inhalations & Aerosols',suppositories_pessaries:'Suppositories & Pessaries',suppository:'Suppositories & Pessaries',transdermal_patches:'Transdermal Patches',effervescent:'Effervescent Formulations',powders_granules:'Powders & Granules',implants_inserts:'Implants & Inserts',nasal_sprays:'Nasal Sprays & Sprays',other:'Other / غيرها'};return m[p?.dosageForm||'tablets_capsules']||'Other / غيرها'}
+function unitInfo(p){
+  if(isStripForm(p)){
+    const stripPrice=Number(p.stripPrice!=null?p.stripPrice:p.price||0);
+    return {boxU:1,stripU:1,boxPrice:stripPrice,stripPrice,piecePrice:stripPrice};
+  }
+  const price=Number(p.price||0);
+  return {boxU:1,stripU:1,boxPrice:price,stripPrice:price,piecePrice:price};
+}
+function stockLabel(p){
+  const u=Math.max(0,Number(p.stockUnits!=null?p.stockUnits:p.stock||0));
+  return isStripForm(p)?`${u} شريط`:`${u} وحدة`;
+}
+function canSellNow(){
+  if(!state.currentUser) return false;
+  if(state.currentUser.role==='pharmacist') return !!activeShift();
+  return can('sale');
+}
+function posShiftWarning(){
+  if(state.currentUser?.role==='pharmacist' && !activeShift()) return `<div class="panel" style="margin-bottom:10px;border:1px solid #f59e0b;background:#fffbeb"><b>⏸️ لا يمكن إجراء البيع حالياً</b><div class="muted" style="margin-top:5px">يجب بدء وردية الصيدلي أولاً من صفحة <b>ورديات الصيادلة</b>.</div><button class="btn primary" style="margin-top:9px" onclick="go('shifts')">الذهاب إلى الورديات وبدء الوردية</button></div>`;
+  return '';
+}
+function pos(){
+  let q=(state.query||'').toLowerCase();
+  let ps=state.products.filter(p=>(p.name+' '+p.scientific+' '+p.category).toLowerCase().includes(q));
+  const discountAmount=calcDiscount();
+  const bankakBox=isElectronicPayment(state.paymentMethod)?`<div class="panel" style="margin-top:10px;border:1px solid #bbf7d0;background:#f0fdf4"><div class="row" style="justify-content:space-between"><div><b>إشعار تحويل ${paymentMethodLabel(state.paymentMethod)}</b><div class="muted">يجب تصوير إشعار التحويل أو اختياره من المعرض وحفظه قبل إتمام البيع.</div></div><div class="row"><button class="btn dark" onclick="openPaymentCamera()">📷 ${state.paymentProof?'إعادة تصوير':'تصوير الإشعار'}</button><label class="btn light">🖼️ من المعرض<input type="file" accept="image/*" onchange="handlePaymentProofFile(this.files[0])" hidden></label></div></div>${state.paymentProof?`<div style="margin-top:10px"><img src="${state.paymentProof}" alt="إشعار التحويل" style="width:100%;max-height:220px;object-fit:contain;border-radius:12px;border:1px solid #d1d5db;background:#fff"><div class="muted" style="margin-top:5px">✓ تم حفظ صورة الإشعار مؤقتاً، وسيتم حفظها مع الفاتورة.</div></div>`:''}</div>`:'';
+  return shell(`${posShiftWarning()}<div class="pos"><div><div class="panel"><div class="row"><input id="posq" class="input search grow" value="${esc(state.query)}" placeholder="ابحث عن الدواء بالاسم أو المادة الفعالة" oninput="liveSearch(this)"><button class="btn light" onclick="clearSearch()">مسح</button></div></div><div class="panel"><h2>الأدوية</h2><div class="products">${ps.map(p=>{let u=unitInfo(p),stock=Number(p.stockUnits!=null?p.stockUnits:p.stock||0),threshold=Number(p.minStock||0);return `<div class="prod"><span class="badge">${esc(p.category)}</span><h3>${esc(p.name)}</h3><p>${esc(p.scientific||'')}</p><p class="${stock<=threshold?'danger-text':''}">المخزون: ${stockLabel(p)}</p><div class="row" style="justify-content:space-between"><span class="muted">شراء/${isStripForm(p)?'شريط':'وحدة'}: ${money(p.cost||0)}</span><b>${money(isStripForm(p)?u.stripPrice:u.piecePrice)}</b></div><div class="row" style="margin-top:7px"><button class="btn ${isStripForm(p)?'dark':'primary'} small" ${(!canSellNow()||stock<1)?'disabled':''} onclick="addCart(${p.id},'${isStripForm(p)?'strip':'unit'}')">${isStripForm(p)?'شريط':'وحدة'} ${money(isStripForm(p)?u.stripPrice:u.piecePrice)}</button></div></div>`}).join('')}</div></div></div><div class="panel cart"><h2>🧾 فاتورة البيع <button class="btn light small" style="float:left" onclick="clearCart()">إفراغ</button></h2><div class="cart-list">${state.cart.length?state.cart.map((i,idx)=>`<div class="cart-item"><b>${esc(i.name)}</b><div class="muted">${i.unitLabel} • ${money(i.price)} × ${i.qty}</div><div class="qty"><button onclick="changeQty(${idx},-1)">−</button><b>${i.qty}</b><button onclick="changeQty(${idx},1)">+</button><button class="btn danger small" onclick="removeCart(${idx})">حذف</button></div></div>`).join(''):'<p class="muted" style="text-align:center;padding:30px">السلة فارغة</p>'}</div><div style="border-top:1px solid #e2e8f0;padding-top:10px"><div class="row"><span class="muted">المجموع قبل الخصم</span><b>${money(cartSubtotal())}</b></div><div class="formgrid" style="margin-top:8px"><select id="discountType" class="select" onchange="state.discountType=this.value;render()"><option value="percent" ${state.discountType!=='fixed'?'selected':''}>خصم %</option><option value="fixed" ${state.discountType==='fixed'?'selected':''}>خصم مبلغ</option></select><input id="discountValue" class="input" type="number" min="0" step=".01" value="${state.discountValue||''}" placeholder="${state.discountType==='fixed'?'قيمة الخصم':'نسبة الخصم %'}" oninput="state.discountValue=Number(this.value||0);updatePOSTotals()"></div><div class="row" style="justify-content:space-between;margin-top:7px"><span class="muted">الخصم</span><span class="danger-text" id="discountAmount">${money(discountAmount)}</span></div><div class="row" style="justify-content:space-between;border-top:1px solid #e2e8f0;padding-top:10px"><span>الإجمالي</span><span class="total" id="posGrandTotal">${money(Math.max(0,cartSubtotal()-discountAmount))}</span></div><div class="panel" style="margin:10px 0 0;padding:12px;background:#f8fafc"><label style="font-weight:700;font-size:13px;display:block;margin-bottom:7px">طريقة الدفع</label><select id="paymentMethod" class="select" onchange="setPaymentMethod(this.value)"><option value="cash" ${state.paymentMethod==='cash'?'selected':''}>💵 كاش</option><option value="bankak" ${state.paymentMethod==='bankak'?'selected':''}>📱 بنكك</option><option value="fawry" ${state.paymentMethod==='fawry'?'selected':''}>📲 فوري</option><option value="ocash" ${state.paymentMethod==='ocash'?'selected':''}>💳 أوكاش</option></select><div class="formgrid" style="margin-top:9px"><div><label class="muted">المبلغ المدفوع</label><input id="paidAmount" class="input" type="number" min="0" step=".01" value="${Math.max(0,cartSubtotal()-discountAmount)}" placeholder="المبلغ الذي دفعه العميل" oninput="updatePaymentSummary()"></div><div><label class="muted">الباقي</label><input id="changeAmount" class="input" type="text" value="0.00" readonly style="background:#f1f5f9;font-weight:800"></div></div>${bankakBox}</div><button class="btn primary" style="margin-top:10px" ${!canSellNow()?'disabled':''} onclick="checkout()">تأكيد البيع وطباعة</button></div></div>`,'نقطة البيع')
+}
+function cashbox(){
+  const sales=state.sales||[], purchases=state.purchases||[], expenses=state.expenses||[];
+  let cash=0, bankak=0, fawry=0, ocash=0;
+  sales.forEach(s=>{
+    const total=Number(s.total||0), paid=Number(s.paidAmount!=null?s.paidAmount:total);
+    const change=Number(s.changeAmount||Math.max(0,paid-total));
+    if(s.paymentMethod==='bankak') bankak+=paid;
+    else if(s.paymentMethod==='fawry') fawry+=paid;
+    else if(s.paymentMethod==='ocash') ocash+=paid;
+    else cash+=Math.max(0,paid-change);
+    if(change>0) cash-=change;
+  });
+  const applyOut=(method,amount)=>{
+    amount=Number(amount||0);
+    if(method==='bankak')bankak-=amount;
+    else if(method==='fawry')fawry-=amount;
+    else if(method==='ocash')ocash-=amount;
+    else cash-=amount;
+  };
+  purchases.forEach(x=>{if(x.deductFromCashbox)applyOut(x.cashboxMethod,x.total)});
+  expenses.forEach(x=>{if(x.deductFromCashbox)applyOut(x.cashboxMethod,x.amount)});
+  (state.returns||[]).forEach(r=>applyOut(r.refundMethod||'cash',r.refundAmount));
+  const total=cash+bankak+fawry+ocash;
+  return shell(`<div class="panel"><h2>💰 الصندوق</h2><p class="muted">الرصيد محسوب من المبيعات والمشتريات والمصروفات المسجلة على الصندوق. المبلغ المدفوع إلكترونياً يضاف إلى حساب وسيلة الدفع المحددة.</p></div><div class="grid cards"><div class="card stat">💰 إجمالي الصندوق<b>${money(total)}</b><div class="muted">كاش + بنكك + فوري + أوكاش</div></div><div class="card stat">💵 كاش<b>${money(cash)}</b><div class="muted">السيولة النقدية</div></div><div class="card stat">📱 بنكك<b>${money(bankak)}</b><div class="muted">الرصيد الإلكتروني</div></div><div class="card stat">📲 فوري<b>${money(fawry)}</b><div class="muted">الرصيد الإلكتروني</div></div><div class="card stat">💳 أوكاش<b>${money(ocash)}</b><div class="muted">الرصيد الإلكتروني</div></div></div><div class="panel" style="margin-top:14px"><h2>كيفية احتساب الصندوق</h2><div class="muted" style="line-height:1.9">• الكاش: المدفوعات النقدية ناقص الباقي والمشتريات/المصروفات النقدية.<br>• بنكك: مبيعات بنكك ناقص العمليات المسددة من رصيد بنكك.<br>• فوري: مبيعات فوري ناقص العمليات المسددة من رصيد فوري.<br>• أوكاش: مبيعات أوكاش ناقص العمليات المسددة من رصيد أوكاش.<br>• إجمالي الصندوق = الكاش + بنكك + فوري + أوكاش.</div></div>`,'الصندوق');
+}
+function warehouse(){
+  const filtered=state.products.filter(p=>(p.name+' '+p.scientific+' '+p.category+' '+p.shelf).toLowerCase().includes((state.query||'').toLowerCase()));
+  const totalQty=filtered.reduce((sum,p)=>sum+Number(p.warehouseUnits||0),0);
+  const totalValue=filtered.reduce((sum,p)=>sum+Number(p.warehouseUnits||0)*Number(p.cost||0),0);
+  return shell(`<div class="panel"><div class="row" style="flex-wrap:wrap"><input class="input search grow" placeholder="بحث في المخزن" value="${esc(state.query)}" oninput="liveSearch(this)">${can('inventoryEdit')?`<button class="btn primary" onclick="warehouseAddModal()">+ إضافة كمية للمخزن</button><button class="btn dark" onclick="productModal(0,true)">+ إضافة دواء جديد للمخزن</button>`:''}</div><p class="muted" style="margin:8px 0 0">المخزن مرحلة مستقلة عن المخزون. أضف الكمية هنا أولاً، ثم انقل الكمية إلى المخزون عند الحاجة.</p></div><div class="grid cards" style="margin-bottom:14px"><div class="card stat">🏬 كمية المخزن<b>${totalQty.toLocaleString('ar-SA')}</b><div class="muted">بالشريط للأقراص والكبسولات وبالوحدة لبقية الأشكال</div></div><div class="card stat">💰 قيمة المخزن بسعر الشراء<b>${money(totalValue)}</b></div></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الدواء</th><th>الشكل</th><th>الفئة</th><th>كمية المخزن</th><th>سعر الشراء</th><th>مكان الرف</th><th>إجراء</th></tr></thead><tbody>${filtered.filter(p=>Number(p.warehouseUnits||0)>0).map(p=>{const q=Number(p.warehouseUnits||0);const unit=isStripForm(p)?'شريط':'وحدة';return `<tr><td><b>${esc(p.name)}</b><div class="muted">${esc(p.scientific||'')}</div></td><td>${formLabel(p)}</td><td>${esc(p.category||'-')}</td><td><b>${q.toLocaleString('ar-SA')} ${unit}</b></td><td>${money(p.cost||0)} / ${unit}</td><td>${esc(p.shelf||'-')}</td><td>${can('inventoryEdit')?`<button class="btn light small" onclick="warehouseAddModal(${p.id})">إضافة كمية</button> <button class="btn primary small" onclick="transferWarehouseModal(${p.id})">نقل للمخزون</button>`:'-'}</td></tr>`}).join('')||'<tr><td colspan="7" class="muted">لا توجد أدوية في المخزن.</td></tr>'}</tbody></table></div></div>`,'المخزن');
+}
+function warehouseAddModal(id){
+  if(!requirePerm('inventoryEdit'))return;
+  const opts=state.products.map(p=>`<option value="${p.id}" ${Number(p.id)===Number(id)?'selected':''}>${esc(p.name)}</option>`).join('');
+  $('modal').innerHTML=`<div class="modal-box"><h2>🏬 إضافة دواء إلى المخزن</h2><form onsubmit="saveWarehouseAdd(event)"><label class="muted">الدواء</label><select id="whP" class="select full" onchange="updateWarehouseHint()">${opts||'<option value="">لا توجد أدوية</option>'}</select><input id="whQ" class="input" type="number" min="1" step="1" required placeholder="الكمية" style="margin-top:9px"><div id="whHint" class="muted" style="margin-top:7px"></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary" ${opts?'':'disabled'}>إضافة للمخزن</button></div></form></div>`;
+  $('modal').classList.add('show');updateWarehouseHint();
+}
+function updateWarehouseHint(){const p=state.products.find(x=>Number(x.id)===Number($('whP')?.value));if(!p)return;if($('whHint'))$('whHint').textContent=`الشكل: ${formLabel(p)} • الوحدة: ${isStripForm(p)?'شريط':'وحدة'} • الموجود حالياً في المخزن: ${Number(p.warehouseUnits||0)}`}
+async function saveWarehouseAdd(e){e.preventDefault();if(!requirePerm('inventoryEdit'))return;const p=state.products.find(x=>Number(x.id)===Number($('whP')?.value));const q=Math.floor(Number($('whQ')?.value||0));if(!p||q<=0)return toast('اختر دواء وأدخل كمية صحيحة');p.warehouseUnits=Number(p.warehouseUnits||0)+q;await put('products',p);closeModal();await load();render();toast(`تمت إضافة ${q} ${isStripForm(p)?'شريط':'وحدة'} إلى المخزن`)}
+function transferWarehouseModal(id){
+  if(!requirePerm('inventoryEdit'))return;
+  const p=state.products.find(x=>Number(x.id)===Number(id));if(!p)return;const available=Number(p.warehouseUnits||0);if(available<=0)return toast('لا توجد كمية متاحة لهذا الدواء في المخزن');
+  const unit=isStripForm(p)?'شريط':'وحدة';
+  $('modal').innerHTML=`<div class="modal-box"><h2>📦 نقل من المخزن إلى المخزون</h2><p><b>${esc(p.name)}</b></p><div class="panel" style="padding:10px;background:#f8fafc"><div>المتاح في المخزن: <b>${available} ${unit}</b></div><div class="muted" style="margin-top:5px">المخزون الحالي: ${Number(p.stockUnits!=null?p.stockUnits:p.stock||0)} ${unit}</div></div><form onsubmit="transferWarehouse(event,${p.id})"><input id="whMoveQ" class="input" type="number" min="1" max="${available}" step="1" required value="${available}" placeholder="الكمية المراد نقلها" style="margin-top:10px"><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">نقل إلى المخزون</button></div></form></div>`;$('modal').classList.add('show');
+}
+async function transferWarehouse(e,id){e.preventDefault();if(!requirePerm('inventoryEdit'))return;const p=state.products.find(x=>Number(x.id)===Number(id));if(!p)return;const available=Number(p.warehouseUnits||0),q=Math.floor(Number($('whMoveQ')?.value||0));if(q<=0||q>available)return toast('الكمية غير صحيحة');p.warehouseUnits=available-q;p.stockUnits=Number(p.stockUnits!=null?p.stockUnits:p.stock||0)+q;p.stock=p.stockUnits;await put('products',p);closeModal();await load();render();toast(`تم نقل ${q} ${isStripForm(p)?'شريط':'وحدة'} إلى المخزون`)}
+function inventory(){
+  const filtered=state.products.filter(p=>(p.name+' '+p.scientific+' '+p.shelf).toLowerCase().includes((state.query||'').toLowerCase()));
+  const stockValue=filtered.reduce((sum,p)=>sum+Number(p.stockUnits!=null?p.stockUnits:p.stock||0)*Number(p.cost||0),0);
+  return shell(`<div class="panel"><div class="row"><input class="input search grow" placeholder="بحث في المخزون" value="${esc(state.query)}" oninput="liveSearch(this)">${can('inventoryEdit')?`<button class="btn primary" onclick="productModal()">+ إضافة دواء</button>`:''}<button class="btn dark" onclick="exportInventoryExcel()">📊 بيان تفصيلي للأدوية</button><button class="btn primary" onclick="exportInventoryStocktake()">🧾 طباعة للجرد</button></div></div><div class="grid cards" style="margin-bottom:14px"><div class="card stat">💰 قيمة المخزون بسعر الشراء<b>${money(stockValue)}</b><div class="muted" style="margin-top:6px">حسب وحدة الحساب الحالية</div></div><div class="card stat">📦 عدد الأصناف<b>${filtered.length}</b></div></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الدواء</th><th>الشكل</th><th>الفئة</th><th>سعر الشراء/${'الوحدة'}</th><th>سعر البيع/${'الوحدة'}</th><th>المخزون</th><th>قيمة المخزون</th><th>مكان الرف</th><th>الصلاحية</th><th>إجراءات</th></tr></thead><tbody>${filtered.map(p=>{let units=Number(p.stockUnits!=null?p.stockUnits:p.stock||0),value=units*Number(p.cost||0);return `<tr><td><b>${esc(p.name)}</b><div class="muted">${esc(p.scientific||'')}</div></td><td>${formLabel(p)}</td><td>${esc(p.category||'-')}</td><td>${money(p.cost||0)}</td><td>${money(unitInfo(p).stripPrice)}</td><td class="${units<=Number(p.minStock||0)?'danger-text':''}">${stockLabel(p)}</td><td><b>${money(value)}</b></td><td><b>${esc(p.shelf||'-')}</b></td><td>${p.expiry||'-'}</td><td><button class="btn light small" onclick="productModal(${p.id})">تعديل</button> <button class="btn danger small" onclick="deleteProduct(${p.id})">حذف</button></td></tr>`}).join('')||'<tr><td colspan="10" class="muted">لا توجد أدوية مطابقة للبحث.</td></tr>'}</tbody></table></div></div>`,'المخزون والأدوية')
+}
+function inDateRange(time,from,to){const d=String(time||'').slice(0,10);return (!from||d>=from)&&(!to||d<=to)}
+function rangeControls(prefix,from,to,clearFn){return `<div class="row" style="flex-wrap:wrap;gap:8px"><label class="muted">من</label><input class="input" type="date" value="${esc(from||'')}" onchange="${prefix}From=this.value;render()"><label class="muted">إلى</label><input class="input" type="date" value="${esc(to||'')}" onchange="${prefix}To=this.value;render()"><button class="btn light" onclick="${clearFn};render()">كل التواريخ</button></div>`}
+function sales(){let arr=state.sales.slice().sort((a,b)=>b.time.localeCompare(a.time));arr=arr.filter(s=>inDateRange(s.time,state.saleFrom,state.saleTo));let total=arr.reduce((a,s)=>a+Number(s.total||0),0),returned=arr.reduce((a,s)=>a+saleReturnedAmount(s),0),net=total-returned,profit=arr.reduce((a,s)=>a+saleNetProfit(s),0);const profitSummary=isSupervisor()?`<b>صافي الربح: ${money(profit)}</b>`:'';return shell(`<div class="panel"><div class="row" style="flex-wrap:wrap"><b>إجمالي المبيعات: ${money(total)}</b><b>المسترجع: ${money(returned)}</b><b>صافي المبيعات: ${money(net)}</b>${profitSummary}<button class="btn primary" style="margin-right:auto" onclick="exportSales()">📊 تصدير Excel</button></div>${rangeControls('state.sale','state.saleFrom','state.saleTo',"state.saleFrom='';state.saleTo=''")}</div><div class="panel">${salesTable(arr)}</div>`,'سجل المبيعات والفواتير')}
+function purchases(){
+  const arr=state.purchases.slice().sort((a,b)=>String(b.time).localeCompare(String(a.time)));
+  const filtered=arr.filter(x=>inDateRange(x.time,state.purchaseFrom,state.purchaseTo));
+  const total=filtered.reduce((a,x)=>a+Number(x.total||0),0);
+  const qty=filtered.reduce((a,x)=>a+Number(x.qty||0),0);
+  return shell(`<div class="panel"><div class="row" style="flex-wrap:wrap">${can('purchase')?`<button class="btn primary" onclick="purchaseModal()">+ تسجيل توريد/شراء</button>`:''}<input id="purchaseSearch" class="input search grow" placeholder="🔎 بحث في المشتريات: اسم الدواء أو المورد" value="${esc(state.purchaseFilter||'')}" oninput="livePurchaseSearch(this)"><button class="btn light" onclick="clearPurchaseSearch()">مسح البحث</button></div>${rangeControls('state.purchase','state.purchaseFrom','state.purchaseTo',"state.purchaseFrom='';state.purchaseTo=''")}</div><div class="grid cards" style="margin-top:14px"><div class="card stat">💰 إجمالي المشتريات<b>${money(total)}</b></div><div class="card stat">📦 إجمالي الوحدات الموردة<b>${qty.toLocaleString('ar-SA')}</b></div><div class="card stat">🧾 عدد عمليات التوريد<b>${filtered.length}</b></div></div><div class="panel" style="margin-top:14px"><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>المورد</th><th>الصنف</th><th>الكمية</th><th>سعر الشراء/الوحدة</th><th>الإجمالي</th><th>الصندوق</th>${isManager()?'<th>إجراء</th>':''}</tr></thead><tbody>${filtered.map(x=>`<tr data-purchase-search="${esc((x.productName||'')+' '+(x.supplier||''))}"><td>${new Date(x.time).toLocaleString('ar')}</td><td>${esc(x.supplier||'-')}</td><td>${esc(x.productName)}</td><td>${x.qty}</td><td>${money(x.costPerUnit!=null?x.costPerUnit:x.costPerBox||0)}</td><td><b>${money(x.total)}</b></td><td>${x.deductFromCashbox?(x.cashboxMethod==='bankak'?'بنكك':'كاش'):'لا يخصم'}</td>${isManager()?`<td><button class="btn danger small" onclick="deletePurchase(${x.id})">حذف</button></td>`:''}</tr>`).join('')||`<tr><td colspan="${isManager()?8:7}" class="muted">لا توجد مشتريات في الفترة المحددة.</td></tr>`}</tbody></table></div></div>`,'المشتريات والتوريد')
+}
+function customers(){return shell(`<div class="panel"><button class="btn primary" onclick="customerModal()">+ إضافة عميل</button></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الاسم</th><th>الهاتف</th><th>ملاحظات</th><th></th></tr></thead><tbody>${state.customers.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.phone||'')}</td><td>${esc(c.note||'')}</td><td><button class="btn danger small" onclick="deleteCustomer(${c.id})">حذف</button></td></tr>`).join('')}</tbody></table></div></div>`,'العملاء')}
+function expenses(){let arr=state.expenses.slice().reverse().filter(e=>inDateRange(e.time,state.expenseFrom,state.expenseTo));let total=arr.reduce((a,e)=>a+Number(e.amount||0),0);return shell(`<div class="panel"><div class="row"><b>إجمالي المصروفات: ${money(total)}</b>${can('expense')?`<button class="btn primary" style="margin-right:auto" onclick="expenseModal()">+ إضافة مصروف</button>`:''}</div>${rangeControls('state.expense','state.expenseFrom','state.expenseTo',"state.expenseFrom='';state.expenseTo=''")}</div><div class="panel"><div class="table-wrap"><table><thead><tr><th>التاريخ</th><th>البند</th><th>المبلغ</th><th>الصندوق</th><th>ملاحظات</th>${isManager()?'<th>إجراء</th>':''}</tr></thead><tbody>${arr.map(e=>`<tr><td>${new Date(e.time).toLocaleString('ar')}</td><td>${esc(e.title)}</td><td>${money(e.amount)}</td><td>${e.deductFromCashbox?(e.cashboxMethod==='bankak'?'بنكك':'كاش'):'لا يخصم'}</td><td>${esc(e.note||'')}</td>${isManager()?`<td><button class="btn danger small" onclick="deleteExpense(${e.id})">حذف</button></td>`:''}</tr>`).join('')||`<tr><td colspan="${isManager()?6:5}" class="muted">لا توجد مصروفات في الفترة المحددة.</td></tr>`}</tbody></table></div></div>`,'المصروفات')}
+function soldBoxes(item){
+  // Kept under the old function name for compatibility with existing reports.
+  // New accounting: tablets/capsules are counted in strips; other forms in units.
+  const p=state.products.find(x=>x.id===item.id);
+  if(isStripForm(p||{})){
+    if(item.unit==='strip') return Number(item.qty||0);
+    if(item.unit==='box') return Number(item.qty||0)*Math.max(1,Number(p?.boxStrips||1));
+    return Number(item.qty||0);
+  }
+  return Number(item.qty||0);
+}
+function reports(){
+  const filteredSales=state.sales.filter(s=>inDateRange(s.time,state.reportFrom,state.reportTo));
+  const filteredExp=state.expenses.filter(e=>inDateRange(e.time,state.reportFrom,state.reportTo));
+  const filteredReturns=(state.returns||[]).filter(r=>inDateRange(r.time,state.reportFrom,state.reportTo));
+  let sales=filteredSales.reduce((a,s)=>a+Number(s.total||0),0)-filteredReturns.reduce((a,r)=>a+Number(r.refundAmount||0),0),profit=filteredSales.reduce((a,s)=>a+Number(s.profit||0),0)-filteredReturns.reduce((a,r)=>a+Number(r.profitReverse||0),0),exp=filteredExp.reduce((a,e)=>a+Number(e.amount||0),0),net=profit-exp;
+  let by={};
+  filteredSales.forEach(s=>s.items.forEach(i=>{const key=i.id+'|'+i.name;by[key]=(by[key]||0)+soldBoxes(i)}));
+  const rows=Object.entries(by).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([key,q])=>{const name=key.split('|').slice(1).join('|');const p=state.products.find(x=>String(x.id)===key.split('|')[0]);return `<tr><td><b>${esc(name)}</b>${p?.boxStrips?`<div class="muted">الصندوق = ${p.boxStrips} أشرطة</div>`:''}</td><td>${Number(q).toLocaleString('ar-SA',{maximumFractionDigits:2})} ${isStripForm(p||{})?'شريط':'وحدة'}</td></tr>`}).join('');
+  const profitCards=isSupervisor()?`<div class="card stat">إجمالي الربح<b>${money(profit)}</b></div><div class="card stat">صافي الربح<b>${money(net)}</b></div>`:'';return shell(`${rangeControls('state.report','state.reportFrom','state.reportTo',"state.reportFrom='';state.reportTo=''")}<div class="grid cards" style="margin-top:14px"><div class="card stat">إجمالي المبيعات<b>${money(sales)}</b></div>${profitCards}<div class="card stat">المصروفات<b>${money(exp)}</b></div></div><div class="panel" style="margin-top:14px"><h2>الأصناف الأكثر مبيعاً</h2><p class="muted">الكمية محسوبة بالشريط للأقراص والكبسولات، وبالوحدة لبقية الأشكال الدوائية.</p><div class="table-wrap"><table><thead><tr><th>الصنف</th><th>الكمية المباعة</th></tr></thead><tbody>${rows||'<tr><td colspan="2" class="muted">لا توجد مبيعات في الفترة المحددة.</td></tr>'}</tbody></table></div></div>`,'التقارير')
+}
+function formatDurationHours(ms){return Math.max(0,ms)/3600000}
+function shiftHoursForPeriod(sh,from,to){
+  const start=new Date(sh.startTime); if(Number.isNaN(start.getTime()))return 0;
+  const rawEnd=sh.endTime?new Date(sh.endTime):new Date();
+  if(Number.isNaN(rawEnd.getTime()))return 0;
+  const a=Math.max(start.getTime(),from.getTime()), b=Math.min(rawEnd.getTime(),to.getTime());
+  return b>a?formatDurationHours(b-a):0;
+}
+function monthRange(date=new Date()){const start=new Date(date.getFullYear(),date.getMonth(),1,0,0,0,0);const end=new Date(date.getFullYear(),date.getMonth()+1,1,0,0,0,0);return {start,end}}
+function hoursText(h){const total=Math.round(Number(h||0)*60),hh=Math.floor(total/60),mm=total%60;return `${hh} ساعة ${String(mm).padStart(2,'0')} دقيقة`}
+function currentPharmacist(){
+  if(!state.currentUser)return null;
+  if(state.currentUser.pharmacistId){
+    const linked=state.pharmacists.find(p=>p.id===Number(state.currentUser.pharmacistId)&&p.active!==false);
+    if(linked)return linked;
+  }
+  // Backward compatibility for old users that were linked by matching name.
+  return state.pharmacists.find(p=>p.active!==false&&String(p.name).toLowerCase()===String(state.currentUser.username||'').toLowerCase())||null;
+}
+function activeShift(){
+  if(state.currentUser?.role==='pharmacist'){
+    const ph=currentPharmacist();
+    if(!ph)return null;
+    return state.shifts.find(x=>!x.endTime&&Number(x.pharmacistId)===Number(ph.id))||null;
+  }
+  return state.shifts.find(x=>!x.endTime)||null;
+}
+function shifts(){
+  const active=isManager()?activeShift():(state.currentUser?.role==='pharmacist'?activeShift():state.shifts.find(x=>!x.endTime)||null), now=new Date(), {start:ms,end:me}=monthRange(now);
+  const activePharmacists=state.pharmacists.filter(p=>p.active!==false);
+  const myPharmacist=currentPharmacist();
+  const monthly=activePharmacists.map(ph=>{
+    const hrs=state.shifts.filter(sh=>sh.pharmacistId===ph.id).reduce((a,sh)=>a+shiftHoursForPeriod(sh,ms,me),0);
+    const count=state.shifts.filter(sh=>sh.pharmacistId===ph.id && sh.startTime && new Date(sh.startTime)<me && (!sh.endTime || new Date(sh.endTime)>ms)).length;
+    return {...ph,hrs,count};
+  });
+  const history=state.shifts.filter(sh=>isManager()||(myPharmacist&&Number(sh.pharmacistId)===Number(myPharmacist.id))).slice().sort((a,b)=>new Date(b.startTime)-new Date(a.startTime));
+  return shell(`<div class="panel"><div class="row" style="justify-content:space-between;align-items:center"><div><h2>👨‍⚕️ ورديات الصيادلة</h2><p class="muted">وقت بداية الوردية ووقت إغلاقها يسجلهما النظام تلقائياً حسب التاريخ والوقت الحالي.</p></div>${isManager()?`<button class="btn primary" onclick="pharmacistModal()">+ إضافة صيدلي</button>`:''}</div><div class="formgrid" style="margin-top:10px"><div><label>الصيدلي</label><select id="shiftPharmacist" class="select">${(isManager()?activePharmacists:(myPharmacist?[myPharmacist]:[])).map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')||'<option value="">لا يوجد صيدلي مرتبط بهذا المستخدم</option>'}</select></div><div style="display:flex;align-items:end"><button class="btn primary" style="width:100%" onclick="openShift()" ${active||!state.pharmacists.length||(!isManager()&&!myPharmacist)?'disabled':''}>▶️ بدء وردية الآن</button></div></div>${active?`<div class="panel" style="margin-top:12px;background:#ecfdf5;border-color:#86efac"><b>الوردية الحالية: ${esc(active.pharmacistName)}</b><div class="muted" style="margin-top:5px">بدأت: ${new Date(active.startTime).toLocaleString('ar')}</div><div class="muted">المدة حتى الآن: ${hoursText((Date.now()-new Date(active.startTime).getTime())/3600000)}</div><button class="btn danger" style="margin-top:10px" onclick="closeShift(${active.id})">⏹️ إغلاق الوردية الآن</button></div>`:'<div class="muted" style="margin-top:12px">لا توجد وردية مفتوحة حالياً.</div>'}</div><div class="panel"><h2>📅 ساعات هذا الشهر تلقائياً</h2><div class="grid cards">${monthly.map(p=>`<div class="card stat"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><b style="font-size:17px">${esc(p.name)}</b>${isManager()?`<button class="btn danger small" title="حذف الصيدلي من القائمة" onclick="deletePharmacist(${p.id})">حذف</button>`:''}</div><span class="muted">${p.count} وردية</span><strong style="display:block;margin-top:8px">${hoursText(p.hrs)}</strong></div>`).join('')||'<div class="muted">لم تتم إضافة صيادلة بعد.</div>'}</div></div><div class="panel"><div class="row" style="justify-content:space-between"><h2 style="margin:0">سجل الورديات</h2>${isManager()?`<button class="btn primary small" onclick="manualShiftModal()">+ إضافة وردية بتاريخ/وقت محدد</button>`:''}</div><div class="table-wrap"><table><thead><tr><th>الصيدلي</th><th>بدء الوردية</th><th>إغلاق الوردية</th><th>الساعات</th><th>الحالة</th>${isManager()?'<th>إجراءات</th>':''}</tr></thead><tbody>${history.map(sh=>{const h=shiftHoursForPeriod(sh,new Date(0),new Date(8640000000000000));return `<tr><td>${esc(sh.pharmacistName)}</td><td>${new Date(sh.startTime).toLocaleString('ar')}</td><td>${sh.endTime?new Date(sh.endTime).toLocaleString('ar'):'-'}</td><td>${hoursText(h)}</td><td>${sh.endTime?'<span class="badge">مغلقة</span>':'<span class="badge amber">مفتوحة</span>'}</td>${isManager()?`<td><button class="btn light small" onclick="shiftEditModal(${sh.id})">تعديل</button> <button class="btn danger small" onclick="deleteShift(${sh.id})">حذف</button></td>`:''}</tr>`}).join('')||'<tr><td colspan="5" class="muted">لا توجد ورديات مسجلة.</td></tr>'}</tbody></table></div></div>`,'ورديات الصيادلة')
+}
+function pharmacistModal(){
+  $('modal').innerHTML=`<div class="modal-box"><h2>إضافة صيدلي</h2><form onsubmit="savePharmacist(event)"><label>اسم الصيدلي</label><input id="phName" class="input" required placeholder="اسم الصيدلي"><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ</button></div></form></div>`;
+  $('modal').classList.add('show');$('phName').focus();
+}
+async function savePharmacist(e){e.preventDefault();if(!isManager())return toast('إضافة الصيادلة متاحة للمدير فقط');const name=$('phName').value.trim();if(!name)return;await add('pharmacists',{name,createdAt:new Date().toISOString(),active:true});closeModal();await load();render();toast('تمت إضافة الصيدلي')}
+async function deletePharmacist(id){
+  if(!isManager())return toast('حذف الصيادلة متاح للمدير فقط');
+  const ph=state.pharmacists.find(p=>p.id===id);if(!ph)return;
+  const open=state.shifts.find(sh=>sh.pharmacistId===id&&!sh.endTime);
+  if(open)return toast('لا يمكن حذف صيدلي لديه وردية مفتوحة. أغلق الوردية أولاً');
+  if(!confirm(`حذف ${ph.name} من قائمة الصيادلة؟\nسيختفي من القائمة الجديدة، مع الاحتفاظ بسجل الورديات والمبيعات القديمة.`))return;
+  ph.active=false;ph.deletedAt=new Date().toISOString();await put('pharmacists',ph);
+  const linked=state.users.filter(u=>u.pharmacistId===id);
+  for(const u of linked){u.pharmacistId=null;await put('users',u)}
+  await load();render();toast(`تم حذف ${ph.name} من قائمة الصيادلة`);
+}
+async function openShift(){
+  if(!requirePerm('shiftOwn'))return;
+  if(activeShift())return toast('توجد وردية مفتوحة حالياً، أغلقها أولاً');
+  const id=Number($('shiftPharmacist')?.value||0), ph=state.pharmacists.find(p=>p.id===id&&p.active!==false);
+  if(!ph)return toast('لا يوجد صيدلي مرتبط بهذا المستخدم. اطلب من المدير ربط المستخدم بالصيدلي أولاً');
+  if(!isManager()){
+    const mine=currentPharmacist();
+    if(!mine||Number(mine.id)!==Number(ph.id))return toast('لا يمكنك بدء وردية لصيدلي آخر');
+  }
+  const now=new Date().toISOString();
+  await add('shifts',{pharmacistId:ph.id,pharmacistName:ph.name,startTime:now,endTime:null,createdAt:now});
+  await load();render();toast(`بدأت وردية ${ph.name} الآن`)
+}
+async function closeShift(id){
+  const sh=state.shifts.find(x=>x.id===id);if(!sh||sh.endTime)return;if(!isManager()){
+    const ph=currentPharmacist();
+    if(!ph||Number(sh.pharmacistId)!==Number(ph.id))return toast('يمكنك إغلاق ورديتك فقط');
+  }
+  if(!confirm(`إغلاق وردية ${sh.pharmacistName} الآن؟`))return;
+  sh.endTime=new Date().toISOString();await put('shifts',sh);await load();render();toast('تم إغلاق الوردية وتسجيل وقت الإغلاق تلقائياً')
+}
+let returnBusy=false;
+function returnedQtyForItem(saleId,itemId){
+  return (state.returns||[]).reduce((sum,r)=>sum+((Number(r.saleId)===Number(saleId))?(r.items||[]).filter(i=>Number(i.id)===Number(itemId)).reduce((a,i)=>a+Number(i.qty||0),0):0),0);
+}
+function returnableItems(s){
+  return (s.items||[]).map(i=>{const sold=Number(i.qty||0),returned=returnedQtyForItem(s.id,i.id),remaining=Math.max(0,sold-returned);return {...i,soldQty:sold,returnedQty:returned,remainingQty:remaining}}).filter(i=>i.remainingQty>0);
+}
+function returnProfitReverse(s,items,refundAmount){
+  const totalGross=Number(s.subtotal||s.total||0), gross=items.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||0),0);
+  const discountShare=totalGross>0?Number(s.discountAmount||0)*(gross/totalGross):0;
+  const revenue=Math.max(0,Number(refundAmount||0));
+  const cost=items.reduce((a,i)=>a+Number(i.cost||0)*Number(i.qty||0)*Number(i.unitSize||1),0);
+  return revenue-cost;
+}
+function returnSaleModal(id){
+  if(!requirePerm('sale'))return;
+  if(!canSellNow()){toast(state.currentUser?.role==='pharmacist'?'يجب بدء وردية الصيدلي أولاً قبل الاسترجاع':'ليس لديك صلاحية للاسترجاع');return}
+  const s=state.sales.find(x=>Number(x.id)===Number(id));if(!s)return;
+  const items=returnableItems(s);if(!items.length)return toast('لا توجد كميات قابلة للاسترجاع لهذه الفاتورة');
+  $('modal').innerHTML=`<div class="modal-box"><div class="row" style="justify-content:space-between"><h2>↩️ استرجاع من الفاتورة ${esc(s.invoice)}</h2><button type="button" class="btn light" onclick="closeModal()">إغلاق</button></div><p class="muted">حدد الكمية التي يريد العميل استرجاعها. لا يمكن استرجاع كمية سبق استرجاعها.</p><div class="table-wrap"><table><thead><tr><th>الدواء</th><th>الوحدة</th><th>المباع</th><th>المسترجع سابقاً</th><th>المتاح للاسترجاع</th><th>كمية الاسترجاع</th></tr></thead><tbody>${items.map((i,idx)=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unitLabel||'وحدة')}</td><td>${i.soldQty}</td><td>${i.returnedQty}</td><td>${i.remainingQty}</td><td><input id="retq_${idx}" class="input" type="number" min="0" max="${i.remainingQty}" step="1" value="0" data-id="${i.id}" style="min-width:90px"></td></tr>`).join('')}</tbody></table></div><div class="panel" style="margin-top:10px;padding:12px;background:#f8fafc"><label style="font-weight:700">طريقة رد المبلغ</label><select id="returnMethod" class="select" style="margin-top:7px"><option value="original">نفس طريقة الدفع الأصلية (${paymentMethodLabel(s.paymentMethod)})</option><option value="cash">💵 كاش</option><option value="bankak">📱 بنكك</option><option value="fawry">📲 فوري</option><option value="ocash">💳 أوكاش</option></select><div class="muted" style="margin-top:7px">قيمة الاسترجاع تحسب تلقائياً مع توزيع الخصم على الأصناف المسترجعة.</div></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn dark" onclick="selectAllReturnQuantities(${items.length})">استرجاع كل المتاح</button><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button type="button" class="btn primary" onclick="applyReturn(${s.id},${items.map(i=>i.id).join(',')})">تأكيد الاسترجاع</button></div></div>`;$('modal').classList.add('show');
+  window.__returnModalItems=items;
+}
+function selectAllReturnQuantities(n){for(let i=0;i<n;i++){const el=$('retq_'+i);if(el)el.value=el.max||'0'}}
+async function applyReturn(saleId){
+  if(returnBusy)return toast('جاري تنفيذ الاسترجاع، انتظر لحظة');
+  if(!requirePerm('sale'))return;
+  if(!canSellNow()){toast(state.currentUser?.role==='pharmacist'?'يجب بدء وردية الصيدلي أولاً قبل الاسترجاع':'ليس لديك صلاحية للاسترجاع');return}
+  const s=state.sales.find(x=>Number(x.id)===Number(saleId));if(!s)return;
+  const items=returnableItems(s);if(!items.length)return toast('لا توجد كميات قابلة للاسترجاع');
+  const selected=[];
+  items.forEach((i,idx)=>{const el=$('retq_'+idx);const q=Math.floor(Number(el?.value||0));if(q>0)selected.push({...i,qty:Math.min(q,i.remainingQty)})});
+  if(!selected.length)return toast('حدد كمية واحدة على الأقل للاسترجاع');
+  const gross=selected.reduce((a,i)=>a+Number(i.price||0)*Number(i.qty||0),0);
+  const subtotal=Number(s.subtotal||s.total||0), prevRefund=saleReturnedAmount(s), remainingInvoice=Math.max(0,Number(s.total||0)-prevRefund);
+  const allRemaining=selected.every(i=>i.qty>=i.remainingQty) && selected.length===items.length;
+  let refund=allRemaining?remainingInvoice:(subtotal>0?gross-(Number(s.discountAmount||0)*(gross/subtotal)):gross);
+  refund=Math.max(0,Math.min(remainingInvoice,Number(refund.toFixed(2))));
+  const methodSelect=$('returnMethod');const rawMethod=methodSelect?.value||'original';const refundMethod=rawMethod==='original'?(s.paymentMethod||'cash'):rawMethod;
+  if(!confirm(`تأكيد استرجاع ${money(refund)} وإعادة الكميات إلى المخزون؟`))return;
+  returnBusy=true;
+  try{
+    const returnRecord={saleId:s.id,invoice:s.invoice,time:new Date().toISOString(),refundAmount:refund,refundMethod,originalPaymentMethod:s.paymentMethod||'cash',items:selected.map(i=>({id:i.id,name:i.name,price:Number(i.price||0),cost:Number(i.cost||0),qty:Number(i.qty||0),unit:i.unit||'unit',unitLabel:i.unitLabel||'وحدة',unitSize:Number(i.unitSize||1)})),profitReverse:returnProfitReverse(s,selected,refund),userId:state.currentUser?.id||null,userName:state.currentUser?.username||''};
+    const t=db.transaction(['returns','products'],'readwrite');
+    const retStore=t.objectStore('returns'),prodStore=t.objectStore('products');
+    retStore.add(returnRecord);
+    for(const i of selected){const p=state.products.find(x=>Number(x.id)===Number(i.id));if(!p)throw new Error('PRODUCT_NOT_FOUND');p.stockUnits=Number(p.stockUnits!=null?p.stockUnits:p.stock||0)+Number(i.qty||0)*Number(i.unitSize||1);p.stock=p.stockUnits;prodStore.put(p)}
+    await new Promise((res,rej)=>{t.oncomplete=()=>res();t.onerror=()=>rej(t.error||new Error('RETURN_FAILED'));t.onabort=()=>rej(t.error||new Error('RETURN_ABORTED'))});
+    closeModal();await load();render();toast(`تم الاسترجاع بنجاح: ${money(refund)}`);
+  }catch(e){console.error('applyReturn',e);toast('تعذر تنفيذ الاسترجاع. لم يتم اعتماد العملية.');}
+  finally{returnBusy=false}
+}
+function printReturnInvoice(id){const r=state.returns.find(x=>Number(x.id)===Number(id));if(!r)return;const s=state.sales.find(x=>Number(x.id)===Number(r.saleId));let w=window.open('','_blank','width=420,height=700');if(!w)return;w.document.write(`<html dir="rtl"><head><title>فاتورة استرجاع ${esc(r.invoice)}</title><style>body{font-family:Arial;padding:18px}h2{text-align:center}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:right}.tot{font-size:18px;font-weight:bold;margin-top:15px}</style></head><body><h2>${esc(state.settings.name)}</h2><div style="text-align:center">فاتورة استرجاع<br>${esc(r.invoice)}<br>${new Date(r.time).toLocaleString('ar')}</div><hr><table><tr><th>الصنف</th><th>الوحدة</th><th>ك</th><th>السعر</th><th>الإجمالي</th></tr>${(r.items||[]).map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unitLabel||'وحدة')}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${money(Number(i.price||0)*Number(i.qty||0))}</td></tr>`).join('')}</table><div class="tot">المبلغ المسترد: ${money(r.refundAmount)}</div><div style="margin-top:8px"><b>طريقة رد المبلغ:</b> ${paymentMethodLabel(r.refundMethod)}</div><div style="margin-top:8px"><b>المستخدم:</b> ${esc(r.userName||'-')}</div><p style="margin-top:18px">تمت إعادة الأصناف إلى المخزون.</p><script>window.onload=()=>window.print()<\/script></body></html>`);w.document.close()}
+function returnsPage(){const arr=(state.returns||[]).slice().sort((a,b)=>String(b.time).localeCompare(String(a.time)));const total=arr.reduce((a,r)=>a+Number(r.refundAmount||0),0),profit=isSupervisor()?arr.reduce((a,r)=>a+Number(r.profitReverse||0),0):0;return shell(`<div class="panel"><div class="row" style="justify-content:space-between;flex-wrap:wrap"><div><h2>↩️ استرجاع الأدوية</h2><p class="muted">كل عملية استرجاع تعيد الكمية إلى المخزون وتنعكس تلقائياً على الصندوق.</p></div><div><b>إجمالي المبالغ المستردة: ${money(total)}</b>${isSupervisor()?`<div class="muted">الربح المعكوس: ${money(profit)}</div>`:''}</div></div></div><div class="panel"><div class="table-wrap"><table><thead><tr><th>الفاتورة</th><th>التاريخ</th><th>الأصناف</th><th>المبلغ</th><th>طريقة الرد</th>${isSupervisor()?'<th>الربح المعكوس</th>':''}<th>المستخدم</th><th>الفاتورة</th></tr></thead><tbody>${arr.map(r=>`<tr><td>${esc(r.invoice||'-')}</td><td>${new Date(r.time).toLocaleString('ar')}</td><td>${(r.items||[]).map(i=>`${esc(i.name)} × ${i.qty}`).join('<br>')}</td><td><b>${money(r.refundAmount)}</b></td><td>${paymentMethodLabel(r.refundMethod)}</td>${isSupervisor()?`<td>${money(r.profitReverse||0)}</td>`:''}<td>${esc(r.userName||'-')}</td><td><button class="btn light small" onclick="printReturnInvoice(${r.id})">طباعة</button></td></tr>`).join('')||'<tr><td colspan="8" class="muted">لا توجد عمليات استرجاع.</td></tr>'}</tbody></table></div></div>`,'استرجاع الأدوية')}
+async function deleteSale(id){
+  if(!isManager())return toast('حذف المبيعات متاح للمدير فقط');
+  const s=state.sales.find(x=>x.id===id);if(!s)return;
+  const linkedReturns=(state.returns||[]).filter(r=>Number(r.saleId)===Number(id));
+  if(linkedReturns.length)return toast('لا يمكن حذف فاتورة لديها عمليات استرجاع. احذف/عالج الاسترجاع أولاً.');
+  if(!confirm(`حذف الفاتورة ${s.invoice}؟ سيتم إعادة الكمية إلى المخزون.`))return;
+  for(const i of (s.items||[])){
+    const p=state.products.find(x=>x.id===i.id);if(p){p.stockUnits=Number(p.stockUnits!=null?p.stockUnits:p.stock||0)+Number(i.qty||0)*Number(i.unitSize||1);p.stock=p.stockUnits;await put('products',p)}
+  }
+  await del('sales',id);await load();render();toast('تم حذف الفاتورة وإعادة الكمية للمخزون');
+}
+async function deletePurchase(id){
+  if(!isManager())return toast('حذف المشتريات متاح للمدير فقط');
+  const x=state.purchases.find(p=>p.id===id);if(!x)return;
+  if(!confirm('حذف عملية الشراء؟ سيتم إنقاص الكمية التي أضافتها من المخزون.'))return;
+  const p=state.products.find(z=>z.id===x.productId);
+  if(p){const units=Number(x.qty||0);p.stockUnits=Math.max(0,Number(p.stockUnits!=null?p.stockUnits:p.stock||0)-units);p.stock=p.stockUnits;await put('products',p)}
+  await del('purchases',id);await load();render();toast('تم حذف عملية الشراء');
+}
+async function deleteExpense(id){if(!isManager())return toast('حذف المصروفات متاح للمدير فقط');if(!confirm('حذف هذا المصروف؟'))return;await del('expenses',id);await load();render();toast('تم حذف المصروف')}
+function shiftEditModal(id){
+  if(!isManager())return toast('تعديل الورديات متاح للمدير فقط');
+  const sh=state.shifts.find(x=>x.id===id);if(!sh)return;
+  const start=new Date(sh.startTime),end=sh.endTime?new Date(sh.endTime):null;
+  $('modal').innerHTML=`<div class="modal-box"><h2>تعديل وردية</h2><form onsubmit="saveShiftEdit(event,${id})"><div class="formgrid"><div><label>الصيدلي</label><select id="eshPh" class="select">${state.pharmacists.map(p=>`<option value="${p.id}" ${p.id===sh.pharmacistId?'selected':''}>${esc(p.name)}</option>`).join('')}</select></div><div><label>بداية الوردية</label><input id="eshStart" class="input" type="datetime-local" value="${toLocalInput(start)}" required></div><div><label>إغلاق الوردية</label><input id="eshEnd" class="input" type="datetime-local" value="${end?toLocalInput(end):''}"></div></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ التعديل</button></div></form></div>`;$('modal').classList.add('show')
+}
+function toLocalInput(d){const x=new Date(d.getTime()-d.getTimezoneOffset()*60000);return x.toISOString().slice(0,16)}
+async function saveShiftEdit(e,id){e.preventDefault();if(!isManager())return toast('تعديل الورديات متاح للمدير فقط');const sh=state.shifts.find(x=>x.id===id),ph=state.pharmacists.find(p=>p.id===Number($('eshPh').value));if(!sh||!ph)return;const st=new Date($('eshStart').value),en=$('eshEnd').value?new Date($('eshEnd').value):null;if(!Number.isFinite(st.getTime())||(en&&!Number.isFinite(en.getTime()))||en&&en<=st)return toast('تحقق من أوقات الوردية');sh.pharmacistId=ph.id;sh.pharmacistName=ph.name;sh.startTime=st.toISOString();sh.endTime=en?en.toISOString():null;await put('shifts',sh);closeModal();await load();render();toast('تم تعديل الوردية')}
+async function deleteShift(id){if(!isManager())return toast('حذف الورديات متاح للمدير فقط');if(!confirm('حذف الوردية؟'))return;await del('shifts',id);await load();render();toast('تم حذف الوردية')}
+function manualShiftModal(){
+  if(!isManager())return toast('إضافة وردية بتاريخ سابق متاحة للمدير فقط');
+  $('modal').innerHTML=`<div class="modal-box"><h2>إضافة وردية يدوياً</h2><form onsubmit="saveManualShift(event)"><div class="formgrid"><div><label>الصيدلي</label><select id="mshPh" class="select">${state.pharmacists.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('')}</select></div><div><label>بداية الوردية</label><input id="mshStart" class="input" type="datetime-local" required></div><div><label>إغلاق الوردية</label><input id="mshEnd" class="input" type="datetime-local"></div></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">إضافة</button></div></form></div>`;$('modal').classList.add('show')
+}
+async function saveManualShift(e){e.preventDefault();if(!isManager())return;const ph=state.pharmacists.find(p=>p.id===Number($('mshPh').value)),st=new Date($('mshStart').value),en=$('mshEnd').value?new Date($('mshEnd').value):null;if(!ph||!Number.isFinite(st.getTime())||(en&&!Number.isFinite(en.getTime()))||en&&en<=st)return toast('تحقق من البيانات');await add('shifts',{pharmacistId:ph.id,pharmacistName:ph.name,startTime:st.toISOString(),endTime:en?en.toISOString():null,createdAt:new Date().toISOString(),manual:true});closeModal();await load();render();toast('تمت إضافة الوردية')}
+function userModal(id){
+  if(!isManager())return toast('المستخدمون متاحون للمدير فقط');
+  const u=id?state.users.find(x=>x.id===id):{};
+  $('modal').innerHTML=`<div class="modal-box"><h2>${id?'تعديل المستخدم':'إضافة مستخدم'}</h2><form onsubmit="saveUser(event,${id||0})"><div class="formgrid"><input id="usrName" class="input" required placeholder="اسم المستخدم" value="${esc(u.username||'')}"><select id="usrRole" class="select"><option value="manager" ${u.role==='manager'?'selected':''}>Manager — كامل</option><option value="supervisor" ${u.role==='supervisor'?'selected':''}>Manager محدود</option><option value="pharmacist" ${u.role==='pharmacist'?'selected':''}>Pharmacist — محدود</option></select><input id="usrPass" class="input full" type="password" ${id?'':'required'} placeholder="${id?'اتركها فارغة للإبقاء على كلمة السر الحالية':'كلمة السر'}"><select id="usrPh" class="select full"><option value="">بدون ربط بصيدلي</option>${state.pharmacists.filter(ph=>ph.active!==false).map(ph=>`<option value="${ph.id}" ${u.pharmacistId===ph.id?'selected':''}>${esc(ph.name)}</option>`).join('')}</select></div><div class="muted" style="margin-top:8px">الصلاحيات تتحدد حسب الدور، ويمكن للمدير تغيير الدور وكلمة السر.</div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ</button></div></form></div>`;$('modal').classList.add('show')
+}
+async function saveUser(e,id){e.preventDefault();if(!isManager())return;const username=$('usrName').value.trim().toLowerCase(),role=$('usrRole').value,pass=$('usrPass').value,pharmacistId=Number($('usrPh').value||0)||null;if(!username)return;const dup=state.users.find(u=>u.username===username&&u.id!==id);if(dup)return toast('اسم المستخدم موجود بالفعل');if(pass&&pass.length<6)return toast('كلمة السر يجب أن تكون 6 أحرف على الأقل');
+  try{if(id){const u=state.users.find(x=>x.id===id);if(!u)return;if(u.username==='manager'&&role!=='manager')return toast('لا يمكن تحويل المدير الرئيسي إلى دور محدود');
+    const oldName=u.username;u.username=username;u.role=role;u.pharmacistId=pharmacistId;
+    if(pass){if(u.uid===fbAuth.currentUser.uid)await fbAuth.currentUser.updatePassword(pass);
+      else{const email=genEmail(),uid=await createAuthUser(email,pass);cache.users.delete(u.uid);await fdb.collection('users').doc(u.uid).delete();u.uid=uid;u.authEmail=email}}
+    await put('users',u);if(oldName!==username)await loginRef(oldName).delete();await loginRef(username).set({email:u.authEmail})
+  }else{if(!pass)return toast('أدخل كلمة السر');const email=genEmail(),uid=await createAuthUser(email,pass);
+    await put('users',{uid,authEmail:email,username,role,pharmacistId,createdAt:new Date().toISOString(),active:true});await loginRef(username).set({email})}
+  }catch(err){return toast(authMsg(err))}
+  closeModal();await load();render();toast('تم حفظ المستخدم')}
+async function deleteUser(id){if(!isManager())return;const u=state.users.find(x=>x.id===id);if(!u||u.username==='manager')return toast('لا يمكن حذف المدير الرئيسي');if(state.currentUser?.id===id)return;if(confirm(`حذف المستخدم ${u.username}؟`)){await del('users',id);loginRef(u.username).delete().catch(()=>{});await load();render();toast('تم حذف المستخدم')}}
+async function changeOwnPassword(){const u=fbAuth.currentUser;if(!u)return;const cur=prompt('أدخل كلمة السر الحالية');if(!cur)return;const np=prompt('أدخل كلمة السر الجديدة (6 أحرف على الأقل)');if(!np||np.length<6)return toast('كلمة السر يجب أن تكون 6 أحرف على الأقل');try{await u.reauthenticateWithCredential(firebase.auth.EmailAuthProvider.credential(u.email,cur));await u.updatePassword(np);toast('تم تغيير كلمة السر')}catch(err){toast(authMsg(err))}}
+function usersPage(){return shell(`<div class="panel"><div class="row" style="justify-content:space-between"><div><h2>🔐 المستخدمون والصلاحيات</h2><p class="muted">المدير الرئيسي يستطيع إدارة المستخدمين وكلمات السر والصلاحيات. Manager المحدود وPharmacist صلاحياتهما أقل.</p></div><button class="btn primary" onclick="userModal()">+ إضافة مستخدم</button></div><div class="table-wrap"><table><thead><tr><th>المستخدم</th><th>الدور</th><th>الصيدلي المرتبط</th><th>إجراءات</th></tr></thead><tbody>${state.users.map(u=>`<tr><td><b>${esc(u.username)}</b></td><td>${esc(roleLabel(u.role))}</td><td>${esc(state.pharmacists.find(p=>p.id===u.pharmacistId)?.name||'-')}</td><td><button class="btn light small" onclick="userModal(${u.id})">تعديل</button> ${u.username!=='manager'?`<button class="btn danger small" onclick="deleteUser(${u.id})">حذف</button>`:''}</td></tr>`).join('')}</tbody></table></div></div><div class="panel"><h2>حسابي</h2><p class="muted">المستخدم الحالي: <b>${esc(state.currentUser.username)}</b></p><button class="btn dark" onclick="changeOwnPassword()">🔑 تغيير كلمة السر</button></div>`,'المستخدمون والصلاحيات')}
+function settings(){return shell(`<div class="panel"><h2>إعدادات الصيدلية</h2><div class="formgrid"><div><label>اسم الصيدلية</label><input id="setName" class="input" value="${esc(state.settings.name)}"></div><div><label>الهاتف</label><input id="setPhone" class="input" value="${esc(state.settings.phone)}"></div><div class="full"><label>العنوان</label><input id="setAddress" class="input" value="${esc(state.settings.address)}"></div><div><label>العملة</label><input id="setCurrency" class="input" value="${esc(state.settings.currency)}"></div></div>${isManager()?`<button class="btn primary" style="margin-top:12px" onclick="saveSettings()">حفظ الإعدادات</button>`:''}<button class="btn dark" style="margin-top:12px;margin-right:8px" onclick="changeOwnPassword()">🔑 تغيير كلمة السر</button>${isManager()?`<button class="btn light" style="margin-top:12px;margin-right:8px" onclick="go('users')">🔐 إدارة المستخدمين</button>`:''}</div><div class="panel"><h2>النسخ الاحتياطي</h2><p class="muted">النسخة الاحتياطية تحفظ الأدوية والمبيعات والمشتريات والمصروفات والعملاء والإعدادات في ملف JSON.</p><div class="row"><button class="btn dark" onclick="backup()">⬇️ تصدير نسخة</button>${isManager()?`<label class="btn light">⬆️ استيراد نسخة<input type="file" accept=".json" onchange="restore(this.files[0])" hidden></label><button class="btn danger" onclick="factoryReset()">⚠️ إعادة ضبط المصنع</button>`:''}</div><p class="muted" style="margin-top:10px">سيحذف هذا الخيار جميع البيانات المحلية ويعيد الأدوية التجريبية والإعدادات الافتراضية.</p></div>`,'الإعدادات والنسخ الاحتياطي')}
+function enableSwipeScroll(){
+  document.querySelectorAll('.swipe-scroll').forEach(el=>{
+    if(el.dataset.swipeBound==='1') return;
+    el.dataset.swipeBound='1';
+    let startX=0,startY=0,startScroll=0,dragging=false;
+    el.addEventListener('touchstart',e=>{
+      if(!e.touches.length)return;
+      startX=e.touches[0].clientX; startY=e.touches[0].clientY; startScroll=el.scrollLeft; dragging=false;
+    },{passive:true});
+    el.addEventListener('touchmove',e=>{
+      if(!e.touches.length)return;
+      const dx=e.touches[0].clientX-startX, dy=e.touches[0].clientY-startY;
+      if(!dragging && Math.abs(dx)>8 && Math.abs(dx)>Math.abs(dy)){dragging=true;}
+      if(dragging){e.preventDefault(); el.scrollLeft=startScroll-dx;}
+    },{passive:false});
+  });
+}
+
+function render(){if(!state.currentUser){$('app').innerHTML=loginScreen();setTimeout(()=>{if($('loginUser'))$('loginUser').focus()},0);return}let c=state.view==='dashboard'?dashboard():state.view==='pos'?pos():state.view==='warehouse'?warehouse():state.view==='inventory'?inventory():state.view==='sales'?sales():state.view==='returns'?returnsPage():state.view==='cashbox'?cashbox():state.view==='alerts'?alertsView():state.view==='purchases'?purchases():state.view==='customers'?customers():state.view==='expenses'?expenses():state.view==='reports'?reports():state.view==='shifts'?shifts():state.view==='users'&&isManager()?usersPage():settings();$('app').innerHTML=c;enableSwipeScroll()}
+function livePurchaseSearch(input){
+  state.purchaseFilter=input.value||'';
+  const q=state.purchaseFilter.trim().toLowerCase();
+  document.querySelectorAll('[data-purchase-search]').forEach(row=>{
+    row.style.display=row.getAttribute('data-purchase-search').toLowerCase().includes(q)?'':'none';
+  });
+}
+function clearPurchaseSearch(){
+  state.purchaseFilter='';
+  const input=$('purchaseSearch');
+  if(input){input.value='';input.focus()}
+  document.querySelectorAll('[data-purchase-search]').forEach(row=>row.style.display='');
+}
+
+function liveSearch(input){
+  state.query=input.value||'';
+  const q=state.query.trim().toLowerCase();
+  if(state.view==='pos'){
+    document.querySelectorAll('.products .prod').forEach(card=>{
+      card.style.display=card.textContent.toLowerCase().includes(q)?'':'none';
+    });
+  }else if(state.view==='inventory'){
+    document.querySelectorAll('.table-wrap tbody tr').forEach(row=>{
+      row.style.display=row.textContent.toLowerCase().includes(q)?'':'none';
+    });
+  }
+}
+
+function clearSearch(){state.query='';const input=$('posq')||document.querySelector('.main .search');if(input){input.value='';input.focus()}document.querySelectorAll('.products .prod').forEach(card=>card.style.display='');document.querySelectorAll('.table-wrap tbody tr').forEach(row=>row.style.display='')}
+function toggleSidebar(force){const sb=document.getElementById('sidebar'),bd=document.getElementById('sidebarBackdrop');if(!sb)return;const open=force===undefined?!sb.classList.contains('open'):force;sb.classList.toggle('open',open);if(bd)bd.classList.toggle('show',open)}
+function go(v){if(!state.currentUser)return render();if(v==='users'&&!isManager())return toast('صفحة المستخدمين متاحة للمدير فقط');if(['warehouse','inventory','purchases','expenses','customers'].includes(v)&&!can('view'))return toast('ليس لديك صلاحية');state.view=v;state.query='';toggleSidebar(false);render()}
+function cartSubtotal(){return state.cart.reduce((a,i)=>a+i.price*i.qty,0)}
+function calcDiscount(){let sub=cartSubtotal(),v=Math.max(0,Number(state.discountValue||0));return Math.min(sub,state.discountType==='fixed'?v:sub*v/100)}
+function updatePOSTotals(){let d=$('discountValue'),sub=cartSubtotal(),v=Number(d?.value||state.discountValue||0);state.discountValue=v;let amt=Math.min(sub,state.discountType==='fixed'?v:sub*v/100);if($('discountAmount'))$('discountAmount').textContent=money(amt);if($('posGrandTotal'))$('posGrandTotal').textContent=money(Math.max(0,sub-amt))}
+async function addCart(id,unit='strip'){
+  if(!canSellNow()){toast(state.currentUser?.role==='pharmacist'?'يجب بدء وردية الصيدلي أولاً قبل البيع':'ليس لديك صلاحية للبيع');return}
+  let p=state.products.find(x=>x.id===id);if(!p)return;
+  const strip=isStripForm(p);
+  unit=strip?'strip':'unit';
+  const u=unitInfo(p),unitSize=1,price=strip?u.stripPrice:u.piecePrice,unitLabel=strip?'شريط':'وحدة';
+  const stock=Number(p.stockUnits!=null?p.stockUnits:p.stock||0);
+  const i=state.cart.find(x=>x.id===id&&x.unit===unit);
+  const used=state.cart.filter(x=>x.id===id).reduce((a,x)=>a+x.qty*x.unitSize,0);
+  if(used+1>stock)return toast('تجاوزت المخزون المتاح');
+  if(i)i.qty++;else state.cart.push({id:p.id,name:p.name,cost:p.cost,price,qty:1,unit,unitLabel,unitSize});
+  state.query='';render();
+}
+function changeQty(index,d){let i=state.cart[index];if(!i)return;let p=state.products.find(x=>x.id===i.id),stock=Number(p?.stockUnits!=null?p.stockUnits:p?.stock||0);let used=state.cart.filter((x,j)=>j!==index&&x.id===i.id).reduce((a,x)=>a+x.qty*x.unitSize,0);let nq=i.qty+d;if(nq<=0)state.cart.splice(index,1);else if(used+nq*i.unitSize<=stock)i.qty=nq;else toast('تم الوصول للحد الأقصى للمخزون');render()}
+function removeCart(index){state.cart.splice(index,1);render()}
+function clearCart(){state.cart=[];state.discountValue=0;state.paymentMethod='cash';state.paymentProof='';render()}
+function setPaymentMethod(method){
+  state.paymentMethod=['bankak','fawry','ocash'].includes(method)?method:'cash';
+  if(state.paymentMethod==='cash')state.paymentProof='';
+  render();
+  if(isElectronicPayment(state.paymentMethod)&&!state.paymentProof)setTimeout(()=>openPaymentCamera(),120);
+}
+async function handlePaymentProofFile(file){
+  if(!file)return;
+  if(!file.type.startsWith('image/'))return toast('الملف المختار ليس صورة');
+  try{
+    const reader=new FileReader();
+    reader.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,1000/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext('2d').drawImage(im,0,0,c.width,c.height);state.paymentProof=c.toDataURL('image/jpeg',0.7);closePaymentCamera();render();toast('تم حفظ صورة إشعار التحويل مؤقتاً')};im.onerror=()=>toast('تعذر قراءة صورة الإشعار');im.src=reader.result};
+    reader.readAsDataURL(file);
+  }catch(e){toast('تعذر قراءة صورة الإشعار')}
+}
+let paymentStream=null,paymentFacing='environment';
+async function openPaymentCamera(){
+  $('modal').innerHTML=`<div class="modal-box"><div class="row" style="justify-content:space-between"><h2>📷 تصوير إشعار ${paymentMethodLabel(state.paymentMethod)}</h2><button class="btn light" onclick="closePaymentCamera()">إغلاق</button></div><div class="camera"><video id="paymentVideo" autoplay muted playsinline></video></div><p id="paymentCameraMsg" class="muted">ضع إشعار التحويل داخل الإطار ثم اضغط تصوير.</p><div class="row"><button class="btn primary" onclick="capturePaymentProof()">📸 تصوير وحفظ</button><button class="btn dark" onclick="switchPaymentCamera()">تبديل الكاميرا</button><label class="btn light">🖼️ اختيار من المعرض<input type="file" accept="image/*" onchange="handlePaymentProofFile(this.files[0])" hidden></label></div></div>`;
+  $('modal').classList.add('show');
+  if(!navigator.mediaDevices?.getUserMedia){$('paymentCameraMsg').textContent='الكاميرا غير متاحة. استخدم HTTPS أو اختر صورة من الهاتف.';return}
+  await startPaymentCamera();
+}
+async function startPaymentCamera(){
+  try{
+    if(paymentStream)paymentStream.getTracks().forEach(t=>t.stop());
+    paymentStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:paymentFacing},width:{ideal:1280},height:{ideal:1920}},audio:false});
+    const v=$('paymentVideo');if(!v)return;v.srcObject=paymentStream;await v.play();
+  }catch(e){const m=$('paymentCameraMsg');if(m)m.textContent='تعذر تشغيل الكاميرا. اسمح لـ Chrome باستخدام الكاميرا أو اختر صورة من الهاتف.'}
+}
+async function switchPaymentCamera(){paymentFacing=paymentFacing==='environment'?'user':'environment';await startPaymentCamera()}
+function capturePaymentProof(){
+  const v=$('paymentVideo');
+  if(!v||!v.videoWidth){toast('انتظر حتى تعمل الكاميرا ثم حاول مرة أخرى');return}
+  const maxW=1200,scale=Math.min(1,maxW/v.videoWidth),canvas=document.createElement('canvas');canvas.width=Math.round(v.videoWidth*scale);canvas.height=Math.round(v.videoHeight*scale);const ctx=canvas.getContext('2d');ctx.drawImage(v,0,0,canvas.width,canvas.height);state.paymentProof=canvas.toDataURL('image/jpeg',0.78);closePaymentCamera();render();toast('تم تصوير إشعار التحويل')
+}
+function closePaymentCamera(){if(paymentStream){paymentStream.getTracks().forEach(t=>t.stop());paymentStream=null}closeModal()}
+function viewPaymentProof(id){const s=state.sales.find(x=>x.id===id);if(!s?.paymentProof)return toast('لا توجد صورة إشعار محفوظة لهذه الفاتورة');$('modal').innerHTML=`<div class="modal-box"><div class="row" style="justify-content:space-between"><h2>إشعار تحويل ${paymentMethodLabel(s.paymentMethod)}</h2><button class="btn light" onclick="closeModal()">إغلاق</button></div><p class="muted">الفاتورة: ${esc(s.invoice)} • ${new Date(s.time).toLocaleString('ar')}</p><img src="${s.paymentProof}" alt="إشعار تحويل بنكك" style="display:block;width:100%;max-height:70vh;object-fit:contain;border-radius:12px;border:1px solid #cbd5e1;background:#f8fafc"><div class="row" style="margin-top:10px;justify-content:center"><button class="btn primary" onclick="printInvoice(${s.id})">طباعة الفاتورة</button></div></div>`;$('modal').classList.add('show')}
+async function checkout(){
+  if(!requirePerm('sale'))return;
+  if(!canSellNow()){toast(state.currentUser?.role==='pharmacist'?'يجب بدء وردية الصيدلي أولاً قبل البيع':'لا يمكن إتمام البيع حالياً');return;}
+  if(!state.cart.length)return toast('السلة فارغة');
+  if(isElectronicPayment(state.paymentMethod)&&!state.paymentProof){toast(`يجب حفظ إشعار تحويل ${paymentMethodLabel(state.paymentMethod)} قبل إتمام البيع`);setTimeout(()=>openPaymentCamera(),150);return}
+  let subtotal=cartSubtotal(),discountAmount=calcDiscount(),total=Math.max(0,subtotal-discountAmount);
+  const paidEl=$('paidAmount');
+  let paid=paidEl&&paidEl.value!==''?Number(paidEl.value):total;
+  if(!Number.isFinite(paid)||paid<total){toast('المبلغ المدفوع يجب أن يكون أكبر من أو يساوي إجمالي الفاتورة');return}
+  const change=Math.max(0,paid-total);
+  let profit=state.cart.reduce((a,i)=>{let p=state.products.find(x=>x.id===i.id),unitCost=Number(p?.cost||0);return a+(i.price-unitCost)*i.qty},0)-discountAmount;
+  const ash=state.currentUser?.role==='pharmacist'?activeShift():null;
+  const salePharmacistName=ash?.pharmacistName||state.currentUser?.username||'';
+  let s={invoice:'INV-'+Date.now().toString().slice(-8),time:new Date().toISOString(),subtotal,discountType:state.discountType||'percent',discountValue:Number(state.discountValue||0),discountAmount,total,profit,paymentMethod:state.paymentMethod||'cash',paidAmount:paid,changeAmount:change,paymentProof:isElectronicPayment(state.paymentMethod)?state.paymentProof:'',items:state.cart.map(i=>({id:i.id,name:i.name,price:i.price,cost:i.cost,qty:i.qty,unit:i.unit,unitLabel:i.unitLabel,unitSize:i.unitSize,boxStrips:unitInfo(state.products.find(x=>x.id===i.id)||{}).boxStrips})),customer:'',pharmacistId:ash?.pharmacistId||null,pharmacistName:salePharmacistName,shiftId:ash?.id||null,userId:state.currentUser?.id||null,userName:state.currentUser?.username||''};
+  s.id=await add('sales',s);
+  for(const i of state.cart){let p=state.products.find(x=>x.id===i.id);if(p){p.stockUnits=Math.max(0,Number(p.stockUnits!=null?p.stockUnits:p.stock||0)-i.qty*i.unitSize);p.stock=p.stockUnits;await put('products',p)}}
+  state.cart=[];state.discountValue=0;state.paymentMethod='cash';state.paymentProof='';await load();render();printInvoice(s.id);toast('تم تسجيل البيع')}
+function updatePaymentSummary(){const sub=cartSubtotal(),d=calcDiscount(),total=Math.max(0,sub-d),el=$('paidAmount'),ch=$('changeAmount');if(!el||!ch)return;const paid=Number(el.value||total);ch.value=money(Math.max(0,paid-total))}
+
+function printInvoice(id){let s=state.sales.find(x=>x.id===id);if(!s)return;let w=window.open('','_blank','width=420,height=700');w.document.write(`<html dir="rtl"><head><title>${esc(s.invoice)}</title><style>body{font-family:Arial;padding:18px}h2{text-align:center}table{width:100%;border-collapse:collapse}td,th{padding:7px;border-bottom:1px solid #ddd;text-align:right}.tot{font-size:18px;font-weight:bold;margin-top:15px}.disc{color:#b91c1c}@media print{button{display:none}}</style></head><body><h2>${esc(state.settings.name)}</h2><div style="text-align:center">${esc(state.settings.address)}<br>${esc(state.settings.phone)}</div><hr><b>فاتورة: ${esc(s.invoice)}</b><br>${new Date(s.time).toLocaleString('ar')}<table><tr><th>الصنف</th><th>الوحدة</th><th>ك</th><th>السعر</th><th>الإجمالي</th></tr>${s.items.map(i=>`<tr><td>${esc(i.name)}</td><td>${esc(i.unitLabel||'صندوق')}</td><td>${i.qty}</td><td>${money(i.price)}</td><td>${money(i.price*i.qty)}</td></tr>`).join('')}</table><div style="margin-top:12px">المجموع: ${money(s.subtotal||s.total)}</div>${s.discountAmount?`<div class="disc">الخصم: -${money(s.discountAmount)}</div>`:''}<div class="tot">الإجمالي النهائي: ${money(s.total)}</div><div style="margin-top:10px"><b>الصيدلي:</b> ${esc(s.pharmacistName||'-')}</div><div style="margin-top:6px"><b>طريقة الدفع:</b> ${paymentMethodLabel(s.paymentMethod)}</div><div style="margin-top:6px"><b>المبلغ المدفوع:</b> ${money(s.paidAmount||s.total)} &nbsp; <b>الباقي:</b> ${money(s.changeAmount||0)}</div><p>شكراً لتعاملكم معنا</p><script>window.onload=()=>window.print()<\/script><script>
+(function(){
+  let deferredInstallPrompt=null;
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); deferredInstallPrompt=e;
+    document.querySelectorAll('.pwa-install-btn').forEach(b=>b.style.display='inline-flex');
+  });
+  window.addEventListener('appinstalled',function(){
+    deferredInstallPrompt=null;
+    document.querySelectorAll('.pwa-install-btn').forEach(b=>b.style.display='none');
+  });
+  window.installMyPharmacy=function(){
+    if(!deferredInstallPrompt){ alert('إذا لم يظهر التثبيت، افتح الموقع من Chrome عبر HTTPS ثم حدّث الصفحة.'); return; }
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(()=>{deferredInstallPrompt=null;});
+  };
+})();
+<\/script>
+</body></html>`);w.document.close()}
+const MEDICINE_CATEGORIES=[
+'Antacids & Anti-ulcer','Anti-emetics','Laxatives & Anti-diarrheals','Antispasmodics',
+'Antihypertensives','Antiarrhythmics','Diuretics','Antihyperlipidemics',
+'Antiplatelets & Anticoagulants','Bronchodilators','Inhaled Corticosteroids','Antihistamines',
+'Antitussives & Expectorants','Decongestants','Analgesics & Antipyretics','NSAIDS',
+'Opioid Analgesics','Antidepressants','Anxiolytics & Sedatives','Anticonvulsants',
+'Oral Antidiabetics','Insulins','Thyroid Hormones','Systemic Corticosteroids','Oral Contraceptives',
+'Penicillins & Cephalosporins','Macrolides & Quinolones','Antifungals','Antivirals','Antiparasitics',
+'Urinary Antiseptics','Prostate & Erectile Dysfunction','Ophthalmic & Otic Preparations',
+'Topical & Dermatologicals','Vitamins & Supplements','Immunosuppressants & Oncology'
+];
+function categoryOptions(current){
+  const known=MEDICINE_CATEGORIES.includes(String(current||''));
+  const otherSelected=!known&&current&&String(current)!=='Other / غيرها';
+  return '<option value="">اختر الفئة</option>'+MEDICINE_CATEGORIES.map(c=>`<option value="${esc(c)}" ${current===c?'selected':''}>${esc(c)}</option>`).join('')+`<option value="__other__" ${(!known&&current||current==='Other / غيرها')?'selected':''}>Other / غيرها</option>`;
+}
+function productModal(id,warehouseFirst=false){
+  if(!requirePerm('inventoryEdit'))return;
+  const p=id?state.products.find(x=>x.id===id):{name:'',scientific:'',category:'',price:0,cost:0,stock:0,minStock:5,expiry:'',shelf:'',dosageForm:'tablets_capsules'};
+  if(!p)return;
+  const strip=isStripForm(p);
+  const categoryKnown=MEDICINE_CATEGORIES.includes(String(p.category||''));
+  const categoryIsOther=String(p.category||'')==='Other / غيرها';
+  const initialQty=warehouseFirst?0:Number(p.stockUnits!=null?p.stockUnits:p.stock||0);
+  const qtyPlaceholder=warehouseFirst?(strip?'عدد الأشرطة في المخزن':'عدد الوحدات في المخزن'):(strip?'عدد الأشرطة في المخزون':'عدد الوحدات في المخزون');
+  $('modal').innerHTML=`<div class="modal-box"><h2>${id?'تعديل دواء':warehouseFirst?'إضافة دواء جديد إلى المخزن':'إضافة دواء'}</h2><form onsubmit="saveProduct(event,${id||0},${warehouseFirst?'true':'false'})"><div class="formgrid"><input class="input" id="pn" required placeholder="اسم الدواء" value="${esc(p.name||'')}"><input class="input" id="ps" placeholder="المادة الفعالة" value="${esc(p.scientific||'')}"><div><label class="muted">الفئة</label><select class="select full" id="pc" required onchange="toggleCategoryField()">${categoryOptions(p.category)}</select><input class="input" id="pcOther" style="margin-top:8px;display:${(!categoryKnown&&p.category)?'block':'none'}" placeholder="اكتب الفئة الأخرى" value="${(!categoryKnown&&p.category&&p.category!=='Other / غيرها')?esc(p.category):''}"></div><select class="select full" id="pform" onchange="toggleProductFormFields()"><option value="tablets_capsules" ${p.dosageForm==='tablets_capsules'||p.dosageForm==='tablets'||p.dosageForm==='capsules'||!p.dosageForm?'selected':''}>Tablets & Capsules</option><option value="liquid" ${p.dosageForm==='liquid'?'selected':''}>Liquid Preparations</option><option value="topical" ${p.dosageForm==='topical'?'selected':''}>Topical Preparations</option><option value="drops" ${p.dosageForm==='drops'?'selected':''}>Drops</option><option value="injections" ${p.dosageForm==='injections'?'selected':''}>Injections</option><option value="inhalations_aerosols" ${p.dosageForm==='inhalations_aerosols'?'selected':''}>Inhalations & Aerosols</option><option value="suppositories_pessaries" ${p.dosageForm==='suppositories_pessaries'?'selected':''}>Suppositories & Pessaries</option><option value="transdermal_patches" ${p.dosageForm==='transdermal_patches'?'selected':''}>Transdermal Patches</option><option value="effervescent" ${p.dosageForm==='effervescent'?'selected':''}>Effervescent Formulations</option><option value="powders_granules" ${p.dosageForm==='powders_granules'?'selected':''}>Powders & Granules</option><option value="implants_inserts" ${p.dosageForm==='implants_inserts'?'selected':''}>Implants & Inserts</option><option value="nasal_sprays" ${p.dosageForm==='nasal_sprays'?'selected':''}>Nasal Sprays & Sprays</option><option value="other" ${p.dosageForm==='other'?'selected':''}>Other / غيرها</option></select></div><div class="formgrid" style="margin-top:9px"><input class="input" id="pcost" required type="number" min="0" step=".01" placeholder="${strip?'سعر الشراء للشريط':'سعر الشراء للوحدة'}" value="${strip?Number(p.cost||0):Number(p.cost||0)}"><input class="input" id="pp" required type="number" min="0" step=".01" placeholder="${strip?'سعر البيع للشريط':'سعر البيع للوحدة'}" value="${strip?Number(p.stripPrice!=null?p.stripPrice:p.price||0):Number(p.price||0)}"><input class="input" id="pst" required type="number" min="0" placeholder="${qtyPlaceholder}" value="${initialQty}"><input class="input" id="pmin" required type="number" min="0" placeholder="حد التنبيه (${strip?'بالشريط':'بالوحدة'})" value="${p.minStock??5}"><input class="input" id="pex" type="date" value="${p.expiry||''}"><input class="input" id="pshelf" placeholder="مكان الرف" value="${esc(p.shelf||'')}"></div><div class="row" style="margin-top:10px"><span class="muted">الشكل الدوائي: <b id="formPreview">${formLabel(p)}</b> • وحدة الحساب: <b id="stockPreview">${strip?'شريط':'وحدة'}</b></span></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ</button></div></form></div>`;$('modal').classList.add('show');toggleProductFormFields();updateProductPreview();
+}
+function toggleCategoryField(){
+  const other=$('pc')?.value==='__other__';
+  if($('pcOther')){$('pcOther').style.display=other?'block':'none';if(other)$('pcOther').focus();}
+}
+function toggleProductFormFields(){
+  toggleCategoryField();
+  if($('formPreview'))$('formPreview').textContent=formLabel({dosageForm:$('pform')?.value||'tablets_capsules'});
+  updateProductPreview();
+}
+function updateProductPreview(){const f=$('pform')?.value||'tablets_capsules',stock=+$('pst')?.value||0;if($('stockPreview'))$('stockPreview').textContent=stock+' '+(isStripForm({dosageForm:f})?'شريط':'وحدة')}
+async function saveProduct(e,id,warehouseFirst=false){
+  e.preventDefault();if(!requirePerm('inventoryEdit'))return;
+  const dosageForm=$('pform').value,strip=isStripForm({dosageForm}),enteredQty=+$('pst').value||0,stockQty=warehouseFirst?0:enteredQty,price=+$('pp').value||0,cost=+$('pcost').value||0;
+  const selectedCategory=$('pc').value==='__other__'?($('pcOther').value.trim()||'Other / غيرها'):$('pc').value;
+  if(!selectedCategory)return toast('اختر الفئة أو اكتب فئة أخرى','err');
+  const oldProduct=state.products.find(x=>x.id===id);
+  if(oldProduct && Number(oldProduct.warehouseUnits||0)>0 && normalizeDosageForm(oldProduct.dosageForm)!==normalizeDosageForm(dosageForm))return toast('لا يمكن تغيير الشكل الدوائي ما دامت هناك كمية في المخزن. انقل الكمية أولاً ثم غيّر الشكل.');
+  const warehouseQty=warehouseFirst?enteredQty:Number(oldProduct?.warehouseUnits||0);
+  let p={name:$('pn').value,scientific:$('ps').value,category:selectedCategory,shelf:$('pshelf').value.trim(),price,cost,stock:stockQty,minStock:+$('pmin').value||0,expiry:$('pex').value,dosageForm,boxStrips:strip?Math.max(1,Number(oldProduct?.boxStrips||1)):1,stripUnits:strip?Math.max(1,Number(oldProduct?.stripUnits||1)):1,stripPrice:strip?price:price,piecePrice:price,boxSaleEnabled:false,unitAccountingVersion:2,stockUnits:stockQty,warehouseUnits:warehouseQty};
+  if(id)p.id=id;
+  await put('products',p);closeModal();await load();render();toast(warehouseFirst?`تمت إضافة الدواء إلى المخزن بكمية ${enteredQty} ${strip?'شريط':'وحدة'}`:'تم حفظ الدواء. وحدة الحساب: '+(strip?'الشريط':'الوحدة'))
+}
+async function deleteProduct(id){if(!requirePerm('inventoryEdit'))return;const p=state.products.find(x=>x.id===id);if(Number(p?.warehouseUnits||0)>0)return toast('لا يمكن حذف الدواء ما دامت له كمية في المخزن. انقل الكمية إلى المخزون أولاً.');if(confirm('حذف الدواء؟')){await del('products',id);state.cart=state.cart.filter(x=>x.id!==id);await load();render()}}
+function purchaseModal(){
+  if(!requirePerm('purchase'))return;
+  let opts=state.products.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  $('modal').innerHTML=`<div class="modal-box"><h2>تسجيل توريد</h2><form onsubmit="savePurchase(event)">
+  <div class="panel" style="margin-bottom:10px;padding:10px;background:#f8fafc">
+    <label style="font-weight:700;font-size:13px;display:block;margin-bottom:7px">🔎 ابحث عن الدواء</label>
+    <div class="row" style="gap:7px;align-items:center">
+      <input id="buySearch" class="input grow" autocomplete="off" placeholder="اكتب اسم الدواء للبحث..." oninput="filterBuyProducts(this.value)" onkeydown="if(event.key==='Enter'){event.preventDefault();filterBuyProducts(this.value)}">
+      <button type="button" class="btn light" onclick="clearBuySearch()">مسح</button>
+    </div>
+    <div class="muted" style="font-size:12px;margin-top:6px">اكتب جزءاً من اسم الدواء لتقليل القائمة ثم اختر الصنف.</div>
+  </div>
+  <div class="formgrid"><select id="buyP" class="select" onchange="updatePurchaseFields()">${opts}</select><input id="buyQ" class="input" type="number" min="1" required placeholder="الكمية"><input id="buyC" class="input" type="number" min="0" step=".01" required placeholder="سعر الشراء"><input id="buyS" class="input" placeholder="اسم المورد"></div><div id="buyHint" class="muted" style="margin-top:7px"></div><div class="panel" style="margin-top:10px;padding:12px;background:#f8fafc"><label style="font-weight:700;font-size:13px;display:block;margin-bottom:7px">خصم من الصندوق؟</label><select id="buyDeduct" class="select" onchange="togglePurchaseCashbox()"><option value="yes">نعم</option><option value="no">لا</option></select><div id="buyCashboxMethodWrap" style="margin-top:8px"><label class="muted">طريقة الخصم</label><select id="buyCashboxMethod" class="select"><option value="cash">💵 كاش</option><option value="bankak">📱 بنكك</option><option value="fawry">📲 فوري</option><option value="ocash">💳 أوكاش</option></select></div></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ التوريد</button></div></form></div>`;
+  $('modal').classList.add('show');togglePurchaseCashbox();updatePurchaseFields();setTimeout(()=>$('buySearch')?.focus(),80)
+}
+function filterBuyProducts(value){
+  const q=String(value||'').trim().toLowerCase();
+  const sel=$('buyP');if(!sel)return;
+  const current=sel.value;
+  const matches=state.products.filter(p=>String(p.name||'').toLowerCase().includes(q));
+  sel.innerHTML=matches.map(p=>`<option value="${p.id}">${esc(p.name)}</option>`).join('');
+  if(matches.some(p=>String(p.id)===String(current))) sel.value=current;
+  else if(matches.length) sel.value=String(matches[0].id);
+  updatePurchaseFields();
+  if($('buySearch'))$('buySearch').dataset.count=matches.length;
+}
+function clearBuySearch(){if($('buySearch'))$('buySearch').value='';filterBuyProducts('');$('buySearch')?.focus()}
+function updatePurchaseFields(){const p=state.products.find(x=>x.id==$('buyP')?.value);if(!p)return;const strip=isStripForm(p);if($('buyQ'))$('buyQ').placeholder=strip?'عدد الأشرطة':'عدد الوحدات';if($('buyC'))$('buyC').placeholder=strip?'سعر الشراء للشريط':'سعر الشراء للوحدة';if($('buyHint'))$('buyHint').textContent=strip?`الشكل: ${formLabel(p)} • كل الحسابات والتوريد والبيع بالشريط فقط.`:`الشكل: ${formLabel(p)} • الحساب والتوريد والبيع بالوحدة.`}
+function togglePurchaseCashbox(){const yes=$('buyDeduct')?.value==='yes';if($('buyCashboxMethodWrap'))$('buyCashboxMethodWrap').style.display=yes?'block':'none'}
+async function savePurchase(e){e.preventDefault();if(!requirePerm('purchase'))return;let p=state.products.find(x=>x.id==$('buyP').value),q=+$('buyQ').value,c=+$('buyC').value;if(!p||q<=0)return;p.stockUnits=Number(p.stockUnits!=null?p.stockUnits:p.stock||0)+q;p.stock=p.stockUnits;p.cost=c;await put('products',p);await add('purchases',{time:new Date().toISOString(),supplier:$('buyS').value,productName:p.name,productId:p.id,qty:q,costPerUnit:c,costPerBox:c,total:q*c,deductFromCashbox:$('buyDeduct').value==='yes',cashboxMethod:$('buyCashboxMethod').value,unitType:isStripForm(p)?'strip':'unit',unitLabel:isStripForm(p)?'شريط':'وحدة'});closeModal();await load();render();toast('تم تحديث المخزون وسعر الشراء')}
+
+function customerModal(){if(!requirePerm('customer'))return;$('modal').innerHTML=`<div class="modal-box"><h2>إضافة عميل</h2><form onsubmit="saveCustomer(event)"><div class="formgrid"><input id="cn" class="input" required placeholder="اسم العميل"><input id="cp" class="input" placeholder="الهاتف"><textarea id="cm" class="textarea full" placeholder="ملاحظات"></textarea></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ</button></div></form></div>`;$('modal').classList.add('show')}
+async function saveCustomer(e){e.preventDefault();if(!requirePerm('customer'))return;await add('customers',{name:$('cn').value,phone:$('cp').value,note:$('cm').value});closeModal();await load();render()}
+async function deleteCustomer(id){if(!requirePerm('customer'))return;if(confirm('حذف العميل؟')){await del('customers',id);await load();render()}}
+function expenseModal(){if(!requirePerm('expense'))return;$('modal').innerHTML=`<div class="modal-box"><h2>إضافة مصروف</h2><form onsubmit="saveExpense(event)"><input id="en" class="input" required placeholder="البند"><input id="ea" class="input" required type="number" step=".01" placeholder="المبلغ" style="margin-top:9px"><textarea id="em" class="textarea" placeholder="ملاحظات" style="margin-top:9px"></textarea><div class="panel" style="margin-top:10px;padding:12px;background:#f8fafc"><label style="font-weight:700;font-size:13px;display:block;margin-bottom:7px">خصم من الصندوق؟</label><select id="expDeduct" class="select" onchange="toggleExpenseCashbox()"><option value="yes">نعم</option><option value="no">لا</option></select><div id="expCashboxMethodWrap" style="margin-top:8px"><label class="muted">طريقة الخصم</label><select id="expCashboxMethod" class="select"><option value="cash">💵 كاش</option><option value="bankak">📱 بنكك</option><option value="fawry">📲 فوري</option><option value="ocash">💳 أوكاش</option></select></div></div><div class="row" style="margin-top:14px;justify-content:flex-end"><button type="button" class="btn light" onclick="closeModal()">إلغاء</button><button class="btn primary">حفظ</button></div></form></div>`;$('modal').classList.add('show');toggleExpenseCashbox()}
+function toggleExpenseCashbox(){const yes=$('expDeduct')?.value==='yes';if($('expCashboxMethodWrap'))$('expCashboxMethodWrap').style.display=yes?'block':'none'}
+async function saveExpense(e){e.preventDefault();if(!requirePerm('expense'))return;await add('expenses',{time:new Date().toISOString(),title:$('en').value,amount:+$('ea').value,note:$('em').value,deductFromCashbox:$('expDeduct').value==='yes',cashboxMethod:$('expCashboxMethod').value});closeModal();await load();render();toast('تم حفظ المصروف')}
+function closeModal(){$('modal').classList.remove('show');$('modal').innerHTML=''}
+async function saveSettings(){if(!isManager())return toast('تعديل إعدادات الصيدلية متاح للمدير فقط');state.settings={...state.settings,name:$('setName').value,phone:$('setPhone').value,address:$('setAddress').value,currency:$('setCurrency').value};await put('settings',{id:1,...state.settings});toast('تم حفظ الإعدادات');render()}
+async function backup(){let data={version:7,createdAt:new Date().toISOString(),products:await all('products'),sales:await all('sales'),purchases:await all('purchases'),expenses:await all('expenses'),customers:await all('customers'),returns:await all('returns'),pharmacists:await all('pharmacists'),shifts:await all('shifts'),users:await all('users'),settings:await all('settings')};let blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='mypharmacy-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(a.href)}
+async function restore(file){if(!isManager())return toast('استيراد النسخة الاحتياطية متاح للمدير فقط');if(!file)return;try{let d=JSON.parse(await file.text());if(!confirm('سيتم استبدال البيانات الحالية. هل أنت متأكد؟'))return;for(const s of ['products','sales','returns','purchases','expenses','customers','pharmacists','shifts','settings']){let old=await all(s);for(const x of old)await del(s,x.id);for(const x of (d[s]||[]))await put(s,x)}await load();render();toast('تم استرجاع النسخة الاحتياطية')}catch(e){toast('ملف النسخة الاحتياطية غير صالح')}}
+async function factoryReset(){
+  if(!isManager())return toast('إعادة ضبط المصنع متاحة للمدير فقط');
+  const ok=confirm('تحذير: سيتم حذف جميع الأدوية والمبيعات والمشتريات والمصروفات والعملاء والإعدادات من السحابة (لكل الأجهزة) وإعادة النظام لحالة المصنع. هل تريد المتابعة؟');
+  if(!ok)return;
+  const ok2=confirm('تأكيد نهائي: لا يمكن التراجع عن الحذف إلا إذا كان لديك نسخة احتياطية. اضغط موافق للمتابعة.');
+  if(!ok2)return;
+  try{
+    for(const store of ['products','sales','returns','purchases','expenses','customers','pharmacists','shifts','settings']){for(const x of await all(store))await del(store,x.id)}
+    state={view:'dashboard',products:[],cart:[],sales:[],returns:[],purchases:[],expenses:[],customers:[],pharmacists:[],shifts:[],users:[],currentUser:null,settings:{name:'MyPharmacy',phone:'',address:'',currency:'ج.س'},query:'',saleFilter:'',saleFrom:'',saleTo:'',purchaseFilter:'',purchaseFrom:'',purchaseTo:'',expenseFrom:'',expenseTo:'',reportFrom:'',reportTo:'',discountType:'percent',discountValue:0,paymentMethod:'cash',paymentProof:'',dashboardPeriod:'today'};
+    await seed();
+    await seedUsers();
+    await migrateUnits();
+    await load();
+    restoreSession();render();
+    toast('تمت إعادة ضبط المصنع بنجاح');
+  }catch(e){console.error(e);toast('تعذر تنفيذ إعادة ضبط المصنع');}
+}
+function exportSales(){
+  try{
+    const arr=state.sales.slice().sort((a,b)=>String(b.time||'').localeCompare(String(a.time||''))).filter(s=>inDateRange(s.time,state.saleFrom,state.saleTo));
+    const xmlEsc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+    const cell=(v,type)=>`<Cell><Data ss:Type="${type||'String'}">${xmlEsc(v)}</Data></Cell>`;
+    const num=(v)=>Number.isFinite(Number(v))?Number(v):0;
+    const dateFmt=v=>v?new Date(v).toLocaleString('ar'):'-';
+    const salesHeader=['رقم الفاتورة','التاريخ','طريقة الدفع','الصيدلي','المجموع قبل الخصم','الخصم','الإجمالي النهائي','المسترجع','صافي البيع','المدفوع','الباقي','إشعار التحويل'];
+    if(isSupervisor())salesHeader.push('الربح');
+    const salesRows=arr.map(s=>{
+      const ret=saleReturnedAmount(s); const r=[s.invoice,dateFmt(s.time),paymentMethodLabel(s.paymentMethod),s.pharmacistName||'-',num(s.subtotal||s.total),num(s.discountAmount||0),num(s.total),num(ret),num(Number(s.total||0)-ret),num(s.paidAmount??s.total),num(s.changeAmount||0),s.paymentProof?'نعم':'لا'];
+      if(isSupervisor())r.push(num(saleNetProfit(s)));
+      return '<Row>'+r.map((v,i)=>cell(v,(typeof v==='number'?'Number':'String'))).join('')+'</Row>';
+    });
+    const detailHeader=['رقم الفاتورة','التاريخ','الصيدلي','اسم الدواء','الفئة','الوحدة','الكمية','سعر الوحدة','إجمالي الصنف'];
+    const detailRows=[];
+    arr.forEach(s=>(s.items||[]).forEach(i=>detailRows.push('<Row>'+[
+      s.invoice,dateFmt(s.time),s.pharmacistName||'-',i.name||'',i.category||'',i.unitLabel||'',num(i.qty),num(i.price),num(i.price)*num(i.qty)
+    ].map((v,idx)=>cell(v,typeof v==='number'?'Number':'String')).join('')+'</Row>')));
+    const now=new Date();
+    const period=(state.saleFrom||state.saleTo)?`الفترة: ${state.saleFrom||'من البداية'} إلى ${state.saleTo||'حتى اليوم'}`:'كل المبيعات';
+    const titleStyle=`<Style ss:ID="Title"><Font ss:Bold="1" ss:Size="16"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>`;
+    const headerStyle=`<Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#D9EAD3" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>`;
+    const baseStyle=`<Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="10"/></Style>`;
+    const salesCols=salesHeader.length;
+    const detailCols=detailHeader.length;
+    const summaryRows=`<Row><Cell ss:MergeAcross="${salesCols-1}"><Data ss:Type="String">${xmlEsc(state.settings.name||'MyPharmacy')}</Data></Cell></Row><Row><Cell ss:MergeAcross="${salesCols-1}"><Data ss:Type="String">${xmlEsc(period)} • تاريخ التصدير: ${xmlEsc(now.toLocaleString('ar'))}</Data></Cell></Row><Row ss:Height="26"><Cell ss:MergeAcross="${salesCols-1}" ss:StyleID="Title"><Data ss:Type="String">MyPharmacy - سجل المبيعات والفواتير</Data></Cell></Row><Row>${salesHeader.map(h=>`<Cell ss:StyleID="Header"><Data ss:Type="String">${xmlEsc(h)}</Data></Cell>`).join('')}</Row>`;
+    const detailTop=`<Row><Cell ss:MergeAcross="${detailCols-1}"><Data ss:Type="String">${xmlEsc(state.settings.name||'MyPharmacy')}</Data></Cell></Row><Row><Cell ss:MergeAcross="${detailCols-1}"><Data ss:Type="String">تفاصيل الأصناف داخل الفواتير</Data></Cell></Row><Row ss:Height="26"><Cell ss:MergeAcross="${detailCols-1}" ss:StyleID="Title"><Data ss:Type="String">MyPharmacy - تفاصيل الفواتير</Data></Cell></Row><Row>${detailHeader.map(h=>`<Cell ss:StyleID="Header"><Data ss:Type="String">${xmlEsc(h)}</Data></Cell>`).join('')}</Row>`;
+    const xml=`<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles>${baseStyle}${titleStyle}${headerStyle}</Styles>
+<Worksheet ss:Name="سجل المبيعات"><Table>${summaryRows}${salesRows.join('')||`<Row><Cell ss:MergeAcross="${salesCols-1}"><Data ss:Type="String">لا توجد مبيعات في الفترة المحددة</Data></Cell></Row>`}</Table></Worksheet>
+<Worksheet ss:Name="تفاصيل الفواتير"><Table>${detailTop}${detailRows.join('')||`<Row><Cell ss:MergeAcross="${detailCols-1}"><Data ss:Type="String">لا توجد تفاصيل فواتير في الفترة المحددة</Data></Cell></Row>`}</Table></Worksheet>
+</Workbook>`;
+    const blob=new Blob([xml],{type:'application/vnd.ms-excel;charset=utf-8'});
+    const url=URL.createObjectURL(blob),a=document.createElement('a');
+    a.href=url;a.download='MyPharmacy-سجل-المبيعات-والفواتير-'+localDateKey(new Date())+'.xls';a.rel='noopener';a.style.display='none';
+    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000);
+    toast('تم تصدير سجل المبيعات والفواتير إلى Excel');
+  }catch(e){console.error('sales excel export',e);toast('تعذر إنشاء ملف Excel للمبيعات');}
+}
+function exportInventoryStocktake(){
+  try{
+    const formOrder={tablets_capsules:1,liquid:2,topical:3,drops:4,injections:5,inhalations_aerosols:6,suppositories_pessaries:7,transdermal_patches:8,effervescent:9,powders_granules:10,implants_inserts:11,nasal_sprays:12,other:13};
+    const formNames={tablets_capsules:'Tablets & Capsules',liquid:'Liquid Preparations',topical:'Topical Preparations',drops:'Drops',injections:'Injections',inhalations_aerosols:'Inhalations & Aerosols',suppositories_pessaries:'Suppositories & Pessaries',transdermal_patches:'Transdermal Patches',effervescent:'Effervescent Formulations',powders_granules:'Powders & Granules',implants_inserts:'Implants & Inserts',nasal_sprays:'Nasal Sprays & Sprays',other:'Other / غيرها'};
+    const products=Array.isArray(state.products)?state.products:[];
+    const rows=products.slice().sort((a,b)=>{
+      const ao=formOrder[a.dosageForm]||99,bo=formOrder[b.dosageForm]||99;
+      if(ao!==bo)return ao-bo;
+      const ac=String(a.category||'غير مصنف').trim(),bc=String(b.category||'غير مصنف').trim();
+      const c=ac.localeCompare(bc,'ar');
+      return c||String(a.name||'').localeCompare(String(b.name||''),'ar');
+    });
+    const xmlEsc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+    const cell=(v,type)=>`<Cell><Data ss:Type="${type||'String'}">${xmlEsc(v)}</Data></Cell>`;
+    const header=['الفئة','اسم الدواء','الكمية','مكان الرف'];
+    const body=[];
+    let lastForm='';let lastCat='';
+    rows.forEach(p=>{
+      const form=p.dosageForm||'other',formName=formNames[form]||'أشكال أخرى',cat=String(p.category||'غير مصنف').trim()||'غير مصنف';
+      if(formName!==lastForm){
+        body.push(`<Row ss:StyleID="Group"><Cell ss:MergeAcross="3"><Data ss:Type="String">${xmlEsc(formName)}</Data></Cell></Row>`);
+        lastForm=formName;lastCat='';
+      }
+      if(form==='tablets_capsules'&&cat!==lastCat){
+        body.push(`<Row ss:StyleID="Category"><Cell ss:MergeAcross="3"><Data ss:Type="String">${xmlEsc('الفئة: '+cat)}</Data></Cell></Row>`);
+        lastCat=cat;
+      }
+      const units=Number(p.stockUnits!=null?p.stockUnits:p.stock||0);
+      const qty=isStripForm(p)?`${units} شريط`:`${units} وحدة`;
+      body.push('<Row>'+cell(cat)+cell(p.name||'')+cell(qty)+cell(p.shelf||'-')+'</Row>');
+    });
+    if(!rows.length) body.push(`<Row>${cell('لا توجد أدوية في المخزون')}</Row>`);
+    const now=new Date();
+    const xml=`<?xml version="1.0" encoding="UTF-8"?>
+<?mso-application progid="Excel.Sheet"?>
+<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">
+<Styles>
+<Style ss:ID="Default" ss:Name="Normal"><Alignment ss:Vertical="Center"/><Font ss:FontName="Arial" ss:Size="10"/></Style>
+<Style ss:ID="Title"><Font ss:Bold="1" ss:Size="16"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+<Style ss:ID="Header"><Font ss:Bold="1"/><Interior ss:Color="#D9EAD3" ss:Pattern="Solid"/><Alignment ss:Horizontal="Center" ss:Vertical="Center"/></Style>
+<Style ss:ID="Group"><Font ss:Bold="1" ss:Size="13"/><Interior ss:Color="#DDEBF7" ss:Pattern="Solid"/></Style>
+<Style ss:ID="Category"><Font ss:Bold="1"/><Interior ss:Color="#FFF2CC" ss:Pattern="Solid"/></Style>
+</Styles>
+<Worksheet ss:Name="الجرد"><Table>
+<Column ss:Width="150"/><Column ss:Width="220"/><Column ss:Width="100"/><Column ss:Width="120"/>
+<Row ss:Height="26"><Cell ss:MergeAcross="3" ss:StyleID="Title"><Data ss:Type="String">MyPharmacy - بيان الجرد</Data></Cell></Row>
+<Row><Cell ss:MergeAcross="3"><Data ss:Type="String">تاريخ التصدير: ${xmlEsc(now.toLocaleString('ar'))}</Data></Cell></Row>
+<Row>${header.map(h=>cell(h)).join('')}</Row>
+${body.join('')}
+</Table></Worksheet></Workbook>`;
+    const blob=new Blob([xml],{type:'application/vnd.ms-excel;charset=utf-8'});
+    const filename='MyPharmacy-جرد-'+localDateKey(new Date())+'.xls';
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download=filename;a.rel='noopener';a.style.display='none';
+    document.body.appendChild(a);
+    try{a.click()}catch(e){window.open(url,'_blank','noopener,noreferrer')}
+    setTimeout(()=>{a.remove();URL.revokeObjectURL(url)},3000);
+    toast('تم إنشاء ملف Excel للجرد وترتيبه حسب الشكل الدوائي والفئة');
+  }catch(e){console.error('stocktake export',e);toast('تعذر إنشاء ملف الجرد. حاول مرة أخرى.');}
+}
+function exportInventoryExcel(){
+  const rows=[['اسم الدواء','الفئة','وحدة الحساب','سعر الشراء/الوحدة','سعر البيع/الوحدة','الكمية','قيمة المخزون بسعر الشراء','مكان الرف']];
+  state.products.forEach(p=>{const units=Number(p.stockUnits!=null?p.stockUnits:p.stock||0),u=unitInfo(p),unit=isStripForm(p)?'شريط':'وحدة';rows.push([p.name||'',p.category||'',unit,Number(p.cost||0),Number(u.stripPrice||0),units,Number((units*Number(p.cost||0)).toFixed(2)),p.shelf||''])});
+  const escX=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  const table='<table border="1"><thead><tr>'+rows[0].map(x=>'<th>'+escX(x)+'</th>').join('')+'</tr></thead><tbody>'+rows.slice(1).map(r=>'<tr>'+r.map(x=>'<td>'+escX(x)+'</td>').join('')+'</tr>').join('')+'</tbody></table>';
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"></head><body dir="rtl">'+table+'</body></html>';
+  const blob=new Blob(['\ufeff',html],{type:'application/vnd.ms-excel'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='MyPharmacy-detailed-inventory.xls';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);toast('تم تصدير البيان التفصيلي للأدوية إلى Excel')
+}
+
+function installPWA(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.finally(()=>deferredPrompt=null)}else toast('من قائمة Chrome اختر تثبيت التطبيق / إضافة إلى الشاشة الرئيسية')}
+let deferredPrompt=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e});
+window.addEventListener('beforeunload',()=>{if(paymentStream)paymentStream.getTracks().forEach(t=>t.stop())});
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}
+(async()=>{try{await bootCloud()}catch(e){console.error(e);document.getElementById('app').innerHTML='<div style="padding:24px;font-family:Arial;direction:rtl;text-align:center"><h2>تعذر تشغيل MyPharmacy</h2><p>أعد تحميل الصفحة. إذا استمرت المشكلة امسح بيانات الموقع ثم افتحه مرة أخرى.</p><button onclick="location.reload()" style="padding:12px 20px;border:0;border-radius:10px;background:#059669;color:white;font-weight:bold">إعادة تحميل</button></div>'}})();
+</script>
+<script>
+(function(){
+  let deferredInstallPrompt=null;
+  window.addEventListener('beforeinstallprompt',function(e){
+    e.preventDefault(); deferredInstallPrompt=e;
+    document.querySelectorAll('.pwa-install-btn').forEach(b=>b.style.display='inline-flex');
+  });
+  window.addEventListener('appinstalled',function(){
+    deferredInstallPrompt=null;
+    document.querySelectorAll('.pwa-install-btn').forEach(b=>b.style.display='none');
+  });
+  window.installMyPharmacy=function(){
+    if(!deferredInstallPrompt){ alert('إذا لم يظهر التثبيت، افتح الموقع من Chrome عبر HTTPS ثم حدّث الصفحة.'); return; }
+    deferredInstallPrompt.prompt();
+    deferredInstallPrompt.userChoice.finally(()=>{deferredInstallPrompt=null;});
+  };
+})();
+</script>
+</body></html>
